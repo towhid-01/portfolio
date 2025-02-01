@@ -36,7 +36,7 @@ const projects = [
     description: "This single-page website was created to showcase my skills in HTML, CSS, JavaScript, and CSS animations. Designed as a personal project, it focuses on providing a clean and interactive user experience, with engaging animations and smooth transitions powered by CSS. The website demonstrates my ability to build responsive layouts, integrate basic JavaScript functionality, and enhance user interaction with visually appealing animations. It serves as a great learning tool and a testament to my proficiency in front-end web development.",
     image: "/strawHats.png?height=150&width=400",
     technologies: ["HTML", "CSS","CSS Animation", "JavaScript"],
-    demoLink: "https://github.com/towhid-01/sudoku-game",
+    demoLink: "https://towhid-01.github.io/StrawHat-Pirates/",
     codeLink: "https://github.com/towhid-01/sudoku-game",
   },
 ]
