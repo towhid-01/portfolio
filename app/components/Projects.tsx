@@ -37,7 +37,7 @@ const projects = [
     image: "/strawHats.png?height=150&width=400",
     technologies: ["HTML", "CSS","CSS Animation", "JavaScript"],
     demoLink: "https://towhid-01.github.io/StrawHat-Pirates/",
-    codeLink: "https://github.com/towhid-01/sudoku-game",
+    codeLink: "https://github.com/towhid-01/StrawHat-Pirates",
   },
 ]
 
