@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 const projects = [
   {
     title: "Math Escape",
-    description: "Escape the Dungeon challenges you to solve math puzzles, overcome obstacles, and collect coins to unlock new paths. Use your wits to beat the clock and escape the dungeon before time runs out! How fast can you make it to freedom?",
+    description: "Escape the Dungeon challenges you to solve math puzzles, overcome obstacles, and collect coins to unlock new paths.",
     image: "/image.png?height=150&width=400",
     technologies: ["Unity", "C#"],
     demoLink: "https://towhid-01.itch.io/math-escape",
@@ -17,7 +17,7 @@ const projects = [
   },
   {
     title: "Atomic Architect",
-    description: "Atomic Architect is a physics-based puzzle game where players construct molecular structures by strategically placing atoms. The game challenges players to follow real-world atomic bonding principles, requiring logical thinking and precision. With dynamic interactions, immersive visuals, and engaging mechanics, Atomic Architect offers an educational yet fun experience in molecular design.",
+    description: "Atomic Architect is a physics-based puzzle game where players construct molecular structures by strategically placing atoms.",
     image: "/AtomicArchitect.PNG?height=150&width=400",
     technologies: ["Unity", "C#"],
     demoLink: "https://towhid-01.itch.io/atomic-architect",
@@ -25,7 +25,7 @@ const projects = [
   },
   {
     title: "Sudoku",
-    description: "This Sudoku game, developed using Unity, is currently under development. The game features a clean and user-friendly interface, designed to make gameplay intuitive and enjoyable for players. It includes multiple difficulty levels, offering a variety of challenges for both beginners and seasoned Sudoku enthusiasts. The core gameplay remains true to the classic Sudoku experience, focusing on logic and puzzle-solving skills. Stay tuned for further updates as we continue to refine and expand the game, introducing new features and enhancements in the near future!",
+    description: "This Sudoku game, developed using Unity, is currently under development.",
     image: "/sudoku.png?height=150&width=400",
     technologies: ["Unity", "C#"],
     demoLink: "https://github.com/towhid-01/sudoku-game",
@@ -33,7 +33,7 @@ const projects = [
   },
   {
     title: "StrawHats",
-    description: "This single-page website was created to showcase my skills in HTML, CSS, JavaScript, and CSS animations. Designed as a personal project, it focuses on providing a clean and interactive user experience, with engaging animations and smooth transitions powered by CSS. The website demonstrates my ability to build responsive layouts, integrate basic JavaScript functionality, and enhance user interaction with visually appealing animations. It serves as a great learning tool and a testament to my proficiency in front-end web development.",
+    description: "This single-page website was created to showcase my skills in HTML, CSS, JavaScript, and CSS animations.",
     image: "/strawHats.png?height=150&width=400",
     technologies: ["HTML", "CSS","CSS Animation", "JavaScript"],
     demoLink: "https://towhid-01.github.io/StrawHat-Pirates/",
