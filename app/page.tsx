@@ -1211,6 +1211,7 @@ const SkillsSection = () => {
 }
 
 // Contact Section
+
 const ContactSection = () => {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true })
@@ -1234,7 +1235,7 @@ const ContactSection = () => {
       name: "LinkedIn",
       value: "Professional Network",
       icon: <Linkedin className="w-5 h-5" />,
-      href: "https://www.linkedin.com/in/towhid-sarker/", // your LinkedIn
+      href: "https://www.linkedin.com/in/towhid-sarker/",
       target: "_blank",
       rel: "noopener noreferrer",
       gradient: "from-primary/80 to-secondary/80",
@@ -1243,7 +1244,7 @@ const ContactSection = () => {
       name: "GitHub",
       value: "Code Repository",
       icon: <Github className="w-5 h-5" />,
-      href: "https://github.com/towhid-01", // your GitHub
+      href: "https://github.com/towhid-01",
       target: "_blank",
       rel: "noopener noreferrer",
       gradient: "from-secondary/80 to-primary/80",
@@ -1282,6 +1283,8 @@ const ContactSection = () => {
                 <motion.a
                   key={link.name}
                   href={link.href}
+                  target={link.target || undefined}
+                  rel={link.rel || undefined}
                   initial={{ opacity: 0, x: -20 }}
                   animate={isInView ? { opacity: 1, x: 0 } : {}}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
