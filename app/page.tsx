@@ -555,14 +555,15 @@ const AboutSection = () => {
                   Puzzle Games
                 </Badge>
                 <Badge className="bg-primary/20 text-primary border-primary/30 px-3 py-1">
-                  <Users className="w-3 h-3 mr-1" />
-                  Team Leader
+                  <ClipboardCheck className="w-3 h-3 mr-1" />
+                  Task Management
                 </Badge>
                 <Badge className="bg-secondary/20 text-secondary border-secondary/30 px-3 py-1">
                   <Sparkles className="w-3 h-3 mr-1" />
                   UI Animation
                 </Badge>
               </div>
+
             </motion.div>
 
             <motion.div
@@ -953,7 +954,7 @@ const AchievementsSection = () => {
       items: [
         { name: "Sec Inter University Junior Programming Contest 2022", rank: "Rank 43", team: "UITS_Wreckers_Exist" },
         {
-          name: "6th DRMC Int'l Tech Carnival 2023 – Programming Contest [Preliminary Round]",
+          name: "6th DRMC Int’l Tech Carnival 2023 – Programming Contest [Preliminary Round]",
           rank: "Rank 13",
           team: "CircleCycle",
         },
@@ -1231,14 +1232,18 @@ const ContactSection = () => {
       name: "LinkedIn",
       value: "Professional Network",
       icon: <Linkedin className="w-5 h-5" />,
-      href: "#",
+      href: "https://www.linkedin.com/in/towhid-sarker/", // your LinkedIn
+      target: "_blank",
+      rel: "noopener noreferrer",
       gradient: "from-primary/80 to-secondary/80",
     },
     {
       name: "GitHub",
       value: "Code Repository",
       icon: <Github className="w-5 h-5" />,
-      href: "#",
+      href: "https://github.com/towhid-01", // your GitHub
+      target: "_blank",
+      rel: "noopener noreferrer",
       gradient: "from-secondary/80 to-primary/80",
     },
   ]
@@ -1381,7 +1386,7 @@ const MainContent = () => {
             transition={{ duration: 0.8 }}
             className="text-foreground/60"
           >
-            © 2025 Towhid Sarker. Crafted with Unity-inspired design and passion for game development.
+            © 2025 Towhid Sarker. Designed with intention combining creativity, code, and clarity.
           </motion.p>
         </div>
       </footer>
