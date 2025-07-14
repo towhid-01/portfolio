@@ -557,7 +557,7 @@ const AboutSection = () => {
                   Puzzle Games
                 </Badge>
                 <Badge className="bg-primary/20 text-primary border-primary/30 px-3 py-1">
-                  <ClipboardCheck className="w-3 h-3 mr-1" />
+                  <FaClipboardCheck className="w-3 h-3 mr-1" />
                   Task Management
                 </Badge>
                 <Badge className="bg-secondary/20 text-secondary border-secondary/30 px-3 py-1">
