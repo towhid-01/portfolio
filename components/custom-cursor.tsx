@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef, useCallback } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useTheme } from "@/app/page" // Assuming useTheme is exported from app/page
 
@@ -24,11 +24,13 @@ export const CustomCursor = () => {
   const [isHoveringInput, setIsHoveringInput] = useState(false)
   const [ripples, setRipples] = useState<Ripple[]>([])
 
+  const [isMobile, setIsMobile] = useState(false)
+
   const lerp = (start: number, end: number, amount: number) => {
     return (1 - amount) * start + amount * end
   }
 
-  const animateCursor = useCallback(() => {
+  const animateCursor = () => {
     currentX.current = lerp(currentX.current, mouseX.current, 0.15) // Slightly faster lerp for responsiveness
     currentY.current = lerp(currentY.current, mouseY.current, 0.15)
 
@@ -40,6 +42,19 @@ export const CustomCursor = () => {
     }
 
     requestRef.current = requestAnimationFrame(animateCursor)
+  }
+
+  useEffect(() => {
+    const checkMobile = () => {
+      const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0
+      const isSmallScreen = window.innerWidth <= 768
+      setIsMobile(isTouchDevice || isSmallScreen)
+    }
+
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+
+    return () => window.removeEventListener("resize", checkMobile)
   }, [])
 
   useEffect(() => {
@@ -91,7 +106,11 @@ export const CustomCursor = () => {
         cancelAnimationFrame(requestRef.current)
       }
     }
-  }, [animateCursor])
+  }, [])
+
+  if (isMobile) {
+    return null // Don't render cursor on mobile
+  }
 
   const dotSize = isHoveringInteractive ? 12 : 8 // Dot scales from 8px to 12px
   const ringSize = isHoveringInteractive ? 40 : 30 // Ring scales from 30px to 40px

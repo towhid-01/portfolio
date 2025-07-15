@@ -1,12 +1,12 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react";
-import { motion, useInView, useScroll, useTransform } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { useEffect, useRef, useState } from "react"
+import { motion, useInView, useScroll, useTransform } from "framer-motion"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import {
   Github,
   Linkedin,
@@ -19,7 +19,6 @@ import {
   MapPin,
   Star,
   Zap,
-  Users,
   Target,
   Award,
   Briefcase,
@@ -38,9 +37,9 @@ import {
   Database,
   Settings,
   Layers,
-} from "lucide-react";
-import { FaClipboardCheck } from "react-icons/fa";
-
+} from "lucide-react"
+import { FaClipboardCheck } from "react-icons/fa"
+import { GoogleAnalytics, VisitorCounter } from "@/components/analytics"
 
 // Theme Context
 const ThemeContext = React.createContext<{
@@ -108,7 +107,7 @@ const AnimatedBackground = () => {
     }> = []
 
     // Create particles based on theme
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 65; i++) {
       const size = Math.random() * 3 + 1
       particles.push({
         x: Math.random() * canvas.width,
@@ -117,8 +116,8 @@ const AnimatedBackground = () => {
         vy: (Math.random() - 0.5) * 0.6,
         size,
         originalSize: size,
-        opacity: Math.random() * 0.4 + 0.1,
-        color: theme === "light" ? "#A5A5A5" : "#D4A373",
+        opacity: theme === "light" ? Math.random() * 0.6 + 0.3 : Math.random() * 0.4 + 0.1,
+        color: theme === "light" ? "#7BAFD4" : "#D4A373",
         pulse: Math.random() * Math.PI * 2,
       })
     }
@@ -154,24 +153,30 @@ const AnimatedBackground = () => {
         const currentSize = particle.size * pulseFactor
 
         // Update color based on theme
-        particle.color = theme === "light" ? "#A5A5A5" : "#D4A373"
+        particle.color = theme === "light" ? "#7BAFD4" : "#D4A373"
 
         // Draw particle with glow effect
         ctx.beginPath()
         ctx.arc(particle.x, particle.y, currentSize, 0, Math.PI * 2)
 
-        // Glow effect
+        // Glow effect with proper color handling
         const gradient = ctx.createRadialGradient(particle.x, particle.y, 0, particle.x, particle.y, currentSize * 2)
-        gradient.addColorStop(
-          0,
-          `${particle.color}${Math.floor(particle.opacity * 255)
-            .toString(16)
-            .padStart(2, "0")}`,
-        )
-        gradient.addColorStop(1, `${particle.color}00`), (ctx.fillStyle = gradient)
+        const effectiveOpacity = theme === "light" ? Math.min(particle.opacity * 1.2, 1) : particle.opacity
+
+        // Convert hex to rgba for proper alpha handling
+        const hexToRgba = (hex: string, alpha: number) => {
+          const r = Number.parseInt(hex.slice(1, 3), 16)
+          const g = Number.parseInt(hex.slice(3, 5), 16)
+          const b = Number.parseInt(hex.slice(5, 7), 16)
+          return `rgba(${r}, ${g}, ${b}, ${alpha})`
+        }
+
+        gradient.addColorStop(0, hexToRgba(particle.color, effectiveOpacity))
+        gradient.addColorStop(1, hexToRgba(particle.color, 0))
+        ctx.fillStyle = gradient
         ctx.fill()
 
-        // Connect nearby particles
+        // Connect nearby particles with proper color handling
         particles.slice(index + 1).forEach((otherParticle) => {
           const dx = particle.x - otherParticle.x
           const dy = particle.y - otherParticle.y
@@ -181,9 +186,8 @@ const AnimatedBackground = () => {
             ctx.beginPath()
             ctx.moveTo(particle.x, particle.y)
             ctx.lineTo(otherParticle.x, otherParticle.y)
-            ctx.strokeStyle = `${particle.color}${Math.floor((1 - distance / 120) * particle.opacity * 100)
-              .toString(16)
-              .padStart(2, "0")}`
+            const lineOpacity = (1 - distance / 120) * (theme === "light" ? particle.opacity * 1.3 : particle.opacity)
+            ctx.strokeStyle = hexToRgba(particle.color, Math.min(lineOpacity, 1))
             ctx.lineWidth = 0.5
             ctx.stroke()
           }
@@ -229,6 +233,7 @@ const Navigation = () => {
     { id: "achievements", label: "Achievements" },
     { id: "skills", label: "Skills" },
     { id: "contact", label: "Contact" },
+    { id: "resume", label: "Resume", isExternal: true },
   ]
 
   useEffect(() => {
@@ -250,6 +255,11 @@ const Navigation = () => {
   }, [])
 
   const scrollToSection = (sectionId: string) => {
+    if (sectionId === "resume") {
+      window.open("/Towhid Sarker.pdf", "_blank")
+      setIsOpen(false)
+      return
+    }
     const element = document.getElementById(sectionId)
     if (element) {
       element.scrollIntoView({ behavior: "smooth" })
@@ -284,7 +294,9 @@ const Navigation = () => {
                 whileTap={{ scale: 0.95 }}
                 onClick={() => scrollToSection(item.id)}
                 className={`text-sm font-medium transition-colors ${
-                  activeSection === item.id ? "text-primary" : "text-foreground/70 hover:text-primary"
+                  activeSection === item.id && !item.isExternal
+                    ? "text-primary"
+                    : "text-foreground/70 hover:text-primary"
                 }`}
               >
                 {item.label}
@@ -371,7 +383,9 @@ const Navigation = () => {
                 whileHover={{ x: 10 }}
                 onClick={() => scrollToSection(item.id)}
                 className={`block w-full text-left px-4 py-3 rounded-lg transition-colors ${
-                  activeSection === item.id ? "bg-primary/20 text-primary" : "text-foreground/70 hover:bg-primary/10"
+                  activeSection === item.id && !item.isExternal
+                    ? "bg-primary/20 text-primary"
+                    : "text-foreground/70 hover:bg-primary/10"
                 }`}
               >
                 {item.label}
@@ -565,7 +579,6 @@ const AboutSection = () => {
                   UI Animation
                 </Badge>
               </div>
-
             </motion.div>
 
             <motion.div
@@ -1371,6 +1384,7 @@ const MainContent = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-all duration-500">
+      <GoogleAnalytics />
       <LoadingScreen isLoading={isLoading} /> {/* Render loading screen */}
       <CustomCursor /> {/* Add the custom cursor here */}
       <AnimatedBackground />
@@ -1384,15 +1398,24 @@ const MainContent = () => {
       <ContactSection />
       {/* Footer */}
       <footer className="py-8 border-t border-primary/20 relative z-10">
-        <div className="container mx-auto px-4 text-center">
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            className="text-foreground/60"
-          >
-            © 2025 Towhid Sarker. Designed with intention combining creativity, code, and clarity.
-          </motion.p>
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.8 }}
+              className="text-foreground/60 text-center md:text-left"
+            >
+              © 2025 Towhid Sarker. Designed with intention combining creativity, code, and clarity.
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <VisitorCounter />
+            </motion.div>
+          </div>
         </div>
       </footer>
     </div>
