@@ -39,7 +39,8 @@ import {
   Layers,
 } from "lucide-react"
 import { FaClipboardCheck } from "react-icons/fa"
-import { GoogleAnalytics, VisitorCounter } from "@/components/analytics"
+import { GoogleAnalytics } from "@/components/analytics"
+import { VisitorTracker } from "@/components/visitor-tracker"
 
 // Theme Context
 const ThemeContext = React.createContext<{
@@ -1413,7 +1414,7 @@ const MainContent = () => {
               whileInView={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              <VisitorCounter />
+              <VisitorTracker />
             </motion.div>
           </div>
         </div>
