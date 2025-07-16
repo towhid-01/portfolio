@@ -257,7 +257,7 @@ const Navigation = () => {
 
   const scrollToSection = (sectionId: string) => {
     if (sectionId === "resume") {
-      window.open("/Towhid Sarker.pdf", "_blank")
+      window.open("/Towhid Sarker_Resume.pdf", "_blank")
       setIsOpen(false)
       return
     }
