@@ -550,14 +550,15 @@ const AboutSection = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="space-y-6"
             >
-              <p className="text-lg text-foreground/80 leading-relaxed">
-                I'm a passionate Unity Game Developer specializing in puzzle games, educational experiences, and smooth
-                UI animations. Currently serving as Executive – Project & Task Coordination at Qiulin Technologies,
-                where I lead a team of 25-30 employees while pursuing my passion for game development.
+              <p className="text-lg text-foreground/80 leading-relaxed text-justify">
+                I'm a passionate Unity Game Developer specializing in puzzle games, educational experiences, 
+                and smooth UI animations. Currently working remotely at Visiontillion, a Saudi Arabia based gaming company, 
+                where I focus on creating engaging game UI/UX designs and developing detailed game documentation to 
+                support production and design workflows.
               </p>
 
-              <p className="text-lg text-foreground/80 leading-relaxed">
-                My expertise spans Unity 2D/3D development, DOTween animations, AR/VR experiences, and creating polished
+              <p className="text-lg text-foreground/80 leading-relaxed text-justify">
+                My expertise spans Unity 2D/3D development, DOTween animations, and creating polished
                 gameplay mechanics. I've contributed to multiple games and educational projects, always focusing on user
                 experience and engaging interactions.
               </p>
@@ -657,6 +658,7 @@ const ProjectsSection = () => {
       type: "Educational",
       icon: <Zap className="w-5 h-5" />,
       gradient: "from-secondary to-primary",
+      link: "https://towhid-01.itch.io/atomic-architect", // <-- added link
     },
     {
       title: "Order Up",
@@ -820,6 +822,11 @@ const ProjectsSection = () => {
 
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                     <Button
+                      onClick={() => {
+                        if (project.link) {
+                          window.open(project.link, "_blank")
+                        }
+                      }}
                       variant="outline"
                       size="sm"
                       className="w-full border-primary/30 text-primary hover:bg-primary hover:text-background group bg-transparent mt-4 relative overflow-hidden transition-all duration-300"
