@@ -753,10 +753,10 @@ const ProjectsSection = () => {
                               variant="outline"
                               className={`text-xs transition-all duration-300 ${
                                 project.status === "Completed"
-                                  ? "border-green-500/30 text-green-600 hover:bg-green-500/10"
+                                  ? "border-success/30 text-success-foreground hover:bg-success/10"
                                   : project.status === "In Development"
-                                    ? "border-yellow-500/30 text-yellow-600 hover:bg-yellow-500/10"
-                                    : "border-blue-500/30 text-blue-600 hover:bg-blue-500/10"
+                                    ? "border-warning/30 text-warning-foreground hover:bg-warning/10"
+                                    : "border-info/30 text-info-foreground hover:bg-info/10"
                               }`}
                             >
                               {project.status}
