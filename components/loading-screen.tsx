@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion"
 import { Gamepad2 } from "lucide-react"
-import { useTheme } from "@/app/page" // Import useTheme from app/page
+import { useTheme } from "@/contexts/ThemeContext"
 
 interface LoadingScreenProps {
   isLoading: boolean

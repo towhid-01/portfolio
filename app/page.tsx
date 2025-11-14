@@ -7,11 +7,14 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
+import { toast } from "sonner"
 import {
   Github,
   Linkedin,
   Mail,
-  Phone,
   Code,
   Gamepad2,
   Trophy,
@@ -41,184 +44,14 @@ import {
 import { FaClipboardCheck } from "react-icons/fa"
 import { GoogleAnalytics } from "@/components/analytics"
 import { VisitorTracker } from "@/components/visitor-tracker"
-
-// Theme Context
-const ThemeContext = React.createContext<{
-  theme: "light" | "dark"
-  toggleTheme: () => void
-}>({
-  theme: "light",
-  toggleTheme: () => {},
-})
-
+import { Toaster } from "@/components/ui/sonner"
 import React from "react"
 import { LoadingScreen } from "@/components/loading-screen" // Import the new component
 import { CustomCursor } from "@/components/custom-cursor" // Import the new CustomCursor component
+import { ParticleBackground } from "@/components/ParticleBackground" // Import the enhanced ParticleBackground component
+import { ThemeProvider, useTheme } from "@/contexts/ThemeContext" // Import theme context
 
-// Theme Provider
-const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [theme, setTheme] = useState<"light" | "dark">("dark")
-
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"))
-  }
-
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme)
-  }, [theme])
-
-  return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>
-}
-
-// Custom hook to use theme - EXPORTED for use in LoadingScreen
-export const useTheme = () => {
-  const context = React.useContext(ThemeContext)
-  if (!context) {
-    throw new Error("useTheme must be used within ThemeProvider")
-  }
-  return context
-}
-
-// Animated Background Particles with Enhanced Effects
-const AnimatedBackground = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const { theme } = useTheme()
-  const mouseRef = useRef({ x: 0, y: 0 })
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
-
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
-
-    const particles: Array<{
-      x: number
-      y: number
-      vx: number
-      vy: number
-      size: number
-      opacity: number
-      color: string
-      originalSize: number
-      pulse: number
-    }> = []
-
-    // Create particles based on theme
-    for (let i = 0; i < 65; i++) {
-      const size = Math.random() * 3 + 1
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.6,
-        vy: (Math.random() - 0.5) * 0.6,
-        size,
-        originalSize: size,
-        opacity: theme === "light" ? Math.random() * 0.6 + 0.3 : Math.random() * 0.4 + 0.1,
-        color: theme === "light" ? "#7BAFD4" : "#D4A373",
-        pulse: Math.random() * Math.PI * 2,
-      })
-    }
-
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-      particles.forEach((particle, index) => {
-        particle.x += particle.vx
-        particle.y += particle.vy
-        particle.pulse += 0.02
-
-        // Bounce off edges
-        if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1
-        if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1
-
-        // Mouse interaction
-        const dx = mouseRef.current.x - particle.x
-        const dy = mouseRef.current.y - particle.y
-        const distance = Math.sqrt(dx * dx + dy * dy)
-
-        if (distance < 100) {
-          const force = (100 - distance) / 100
-          particle.vx += (dx / distance) * force * 0.01
-          particle.vy += (dy / distance) * force * 0.01
-          particle.size = particle.originalSize * (1 + force * 0.5)
-        } else {
-          particle.size = particle.originalSize
-        }
-
-        // Pulsing effect
-        const pulseFactor = Math.sin(particle.pulse) * 0.3 + 1
-        const currentSize = particle.size * pulseFactor
-
-        // Update color based on theme
-        particle.color = theme === "light" ? "#7BAFD4" : "#D4A373"
-
-        // Draw particle with glow effect
-        ctx.beginPath()
-        ctx.arc(particle.x, particle.y, currentSize, 0, Math.PI * 2)
-
-        // Glow effect with proper color handling
-        const gradient = ctx.createRadialGradient(particle.x, particle.y, 0, particle.x, particle.y, currentSize * 2)
-        const effectiveOpacity = theme === "light" ? Math.min(particle.opacity * 1.2, 1) : particle.opacity
-
-        // Convert hex to rgba for proper alpha handling
-        const hexToRgba = (hex: string, alpha: number) => {
-          const r = Number.parseInt(hex.slice(1, 3), 16)
-          const g = Number.parseInt(hex.slice(3, 5), 16)
-          const b = Number.parseInt(hex.slice(5, 7), 16)
-          return `rgba(${r}, ${g}, ${b}, ${alpha})`
-        }
-
-        gradient.addColorStop(0, hexToRgba(particle.color, effectiveOpacity))
-        gradient.addColorStop(1, hexToRgba(particle.color, 0))
-        ctx.fillStyle = gradient
-        ctx.fill()
-
-        // Connect nearby particles with proper color handling
-        particles.slice(index + 1).forEach((otherParticle) => {
-          const dx = particle.x - otherParticle.x
-          const dy = particle.y - otherParticle.y
-          const distance = Math.sqrt(dx * dx + dy * dy)
-
-          if (distance < 120) {
-            ctx.beginPath()
-            ctx.moveTo(particle.x, particle.y)
-            ctx.lineTo(otherParticle.x, otherParticle.y)
-            const lineOpacity = (1 - distance / 120) * (theme === "light" ? particle.opacity * 1.3 : particle.opacity)
-            ctx.strokeStyle = hexToRgba(particle.color, Math.min(lineOpacity, 1))
-            ctx.lineWidth = 0.5
-            ctx.stroke()
-          }
-        })
-      })
-
-      requestAnimationFrame(animate)
-    }
-
-    animate()
-
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseRef.current = { x: e.clientX, y: e.clientY }
-    }
-
-    const handleResize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-    }
-
-    window.addEventListener("mousemove", handleMouseMove)
-    window.addEventListener("resize", handleResize)
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove)
-      window.removeEventListener("resize", handleResize)
-    }
-  }, [theme])
-
-  return <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0" />
-}
+// Animated Background is now replaced by ParticleBackground component
 
 // Navigation Component
 const Navigation = () => {
@@ -1120,8 +953,8 @@ const SkillsSection = () => {
           {skillCategories.map((category, index) => (
             <motion.div
               key={category.title}
-              initial={{ opacity: 0, y: 50, rotateY: -45 }}
-              animate={isInView ? { opacity: 1, y: 0, rotateY: 0 } : {}}
+              initial={{ opacity: 0, y: 50 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{
                 duration: 0.8,
                 delay: index * 0.1,
@@ -1129,14 +962,14 @@ const SkillsSection = () => {
                 stiffness: 100,
               }}
               whileHover={{
-                scale: 1.03,
-                y: -8,
-                rotateY: 5,
-                transition: { duration: 0.3 },
+                scale: 1.05,
+                y: -10,
+                rotate: 1,
+                transition: { duration: 0.3, type: "spring", stiffness: 300 },
               }}
-              className="perspective-1000"
+              className="group/card"
             >
-              <Card className="bg-card border-primary/20 backdrop-blur-sm h-full hover:border-primary/40 transition-all duration-500 shadow-lg hover:shadow-2xl relative overflow-hidden group">
+              <Card className="bg-card border-primary/20 backdrop-blur-sm h-full hover:border-primary/50 hover:shadow-[0_0_30px_rgba(147,51,234,0.3)] transition-all duration-500 shadow-lg relative overflow-hidden group">
                 {/* Animated background */}
                 <motion.div
                   className={`absolute inset-0 bg-gradient-to-br ${category.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}
@@ -1231,11 +1064,85 @@ const SkillsSection = () => {
   )
 }
 
-// Contact Section
+// Contact Form Schema
+const contactFormSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters").max(50, "Name must be less than 50 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  projectType: z.string().min(3, "Please specify the project type"),
+  message: z.string().min(10, "Message must be at least 10 characters").max(500, "Message must be less than 500 characters"),
+})
 
+type ContactFormData = z.infer<typeof contactFormSchema>
+
+// Contact Section
 const ContactSection = () => {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<ContactFormData>({
+    resolver: zodResolver(contactFormSchema),
+  })
+
+  const onSubmit = async (data: ContactFormData) => {
+    setIsSubmitting(true)
+
+    try {
+      // Using Formspree - replace YOUR_FORM_ID with actual Formspree form ID
+      // Get free form ID from https://formspree.io/
+      const formspreeEndpoint = "https://formspree.io/f/YOUR_FORM_ID"
+
+      const response = await fetch(formspreeEndpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          projectType: data.projectType,
+          message: data.message,
+          _subject: `New Portfolio Contact: ${data.projectType}`,
+        }),
+      })
+
+      // Log response for debugging
+      console.log("Response status:", response.status)
+      const result = await response.json()
+      console.log("Response data:", result)
+
+      if (response.ok) {
+        toast.success("Message sent successfully!", {
+          description: "Thank you for reaching out. I'll get back to you soon!",
+        })
+        reset()
+      } else {
+        // Show specific error message
+        const errorMsg = result.error || result.errors?.map((e: any) => e.message).join(", ") || "Unknown error"
+        console.error("API Error:", errorMsg)
+        throw new Error(errorMsg)
+      }
+    } catch (error) {
+      // Enhanced error logging
+      console.error("Form submission error details:", {
+        error,
+        message: error instanceof Error ? error.message : "Unknown error",
+        type: typeof error,
+      })
+
+      toast.error("Failed to send message", {
+        description: `Error: ${error instanceof Error ? error.message : "Please try again or contact me directly via email."}`,
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   const contactLinks = [
     {
@@ -1246,10 +1153,10 @@ const ContactSection = () => {
       gradient: "from-primary to-secondary",
     },
     {
-      name: "Phone",
-      value: "016-3830-5863",
-      icon: <Phone className="w-5 h-5" />,
-      href: "tel:016-3830-5863",
+      name: "Discord",
+      value: "towhid", // Replace with your Discord username
+      icon: <MessageCircle className="w-5 h-5" />,
+      href: "#", // Discord doesn't have direct links, or use discord.com/users/YOUR_USER_ID
       gradient: "from-secondary to-primary",
     },
     {
@@ -1340,34 +1247,73 @@ const ContactSection = () => {
                 </CardDescription>
               </CardHeader>
 
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <Input
-                    placeholder="Your Name"
-                    className="bg-background/50 border-primary/20 text-foreground placeholder:text-foreground/40 focus:border-primary transition-colors"
-                  />
-                  <Input
-                    placeholder="Your Email"
-                    type="email"
-                    className="bg-background/50 border-primary/20 text-foreground placeholder:text-foreground/40 focus:border-primary transition-colors"
-                  />
-                </div>
+              <CardContent>
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Input
+                        {...register("name")}
+                        placeholder="Your Name"
+                        className="bg-background/50 border-primary/20 text-foreground placeholder:text-foreground/40 focus:border-primary transition-colors"
+                        disabled={isSubmitting}
+                      />
+                      {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
+                    </div>
+                    <div>
+                      <Input
+                        {...register("email")}
+                        placeholder="Your Email"
+                        type="email"
+                        className="bg-background/50 border-primary/20 text-foreground placeholder:text-foreground/40 focus:border-primary transition-colors"
+                        disabled={isSubmitting}
+                      />
+                      {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
+                    </div>
+                  </div>
 
-                <Input
-                  placeholder="Project Type (Game Dev, Collaboration, etc.)"
-                  className="bg-background/50 border-primary/20 text-foreground placeholder:text-foreground/40 focus:border-primary transition-colors"
-                />
+                  <div>
+                    <Input
+                      {...register("projectType")}
+                      placeholder="Project Type (Game Dev, Collaboration, etc.)"
+                      className="bg-background/50 border-primary/20 text-foreground placeholder:text-foreground/40 focus:border-primary transition-colors"
+                      disabled={isSubmitting}
+                    />
+                    {errors.projectType && <p className="text-red-500 text-xs mt-1">{errors.projectType.message}</p>}
+                  </div>
 
-                <Textarea
-                  placeholder="Tell me about your project or idea..."
-                  rows={5}
-                  className="bg-background/50 border-primary/20 text-foreground placeholder:text-foreground/40 focus:border-primary resize-none transition-colors"
-                />
+                  <div>
+                    <Textarea
+                      {...register("message")}
+                      placeholder="Tell me about your project or idea..."
+                      rows={5}
+                      className="bg-background/50 border-primary/20 text-foreground placeholder:text-foreground/40 focus:border-primary resize-none transition-colors"
+                      disabled={isSubmitting}
+                    />
+                    {errors.message && <p className="text-red-500 text-xs mt-1">{errors.message.message}</p>}
+                  </div>
 
-                <Button className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-background group shadow-lg hover:shadow-xl transition-all duration-300">
-                  <Mail className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
-                  Send Message
-                </Button>
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-background group shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                          className="w-4 h-4 mr-2 border-2 border-background border-t-transparent rounded-full"
+                        />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <Mail className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
+                        Send Message
+                      </>
+                    )}
+                  </Button>
+                </form>
               </CardContent>
             </Card>
           </motion.div>
@@ -1380,6 +1326,7 @@ const ContactSection = () => {
 // Main Component
 const MainContent = () => {
   const [isLoading, setIsLoading] = useState(true)
+  const { theme } = useTheme()
 
   useEffect(() => {
     // Simulate loading time or wait for actual content to render
@@ -1393,9 +1340,10 @@ const MainContent = () => {
   return (
     <div className="min-h-screen bg-background text-foreground transition-all duration-500">
       <GoogleAnalytics />
+      <Toaster />
       <LoadingScreen isLoading={isLoading} /> {/* Render loading screen */}
       <CustomCursor /> {/* Add the custom cursor here */}
-      <AnimatedBackground />
+      <ParticleBackground />
       <Navigation />
       <HeroSection />
       <AboutSection />

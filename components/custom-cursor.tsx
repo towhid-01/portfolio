@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { useTheme } from "@/app/page" // Assuming useTheme is exported from app/page
+import { useTheme } from "@/contexts/ThemeContext"
 
 interface Ripple {
   id: number
@@ -71,7 +71,7 @@ export const CustomCursor = () => {
       ]
       const isInteractive =
         interactiveElements.includes(target.tagName) ||
-        target.closest("[data-cursor-interactive]") || // Custom attribute for more control
+        !!target.closest("[data-cursor-interactive]") || // Custom attribute for more control
         window.getComputedStyle(target).cursor === "pointer"
 
       const isInputOrTextarea = target.tagName === "INPUT" || target.tagName === "TEXTAREA"
@@ -134,6 +134,8 @@ export const CustomCursor = () => {
           transition: "width 0.2s ease-out, height 0.2s ease-out, opacity 0.2s ease-out",
           marginLeft: -dotSize / 2, // Center the dot
           marginTop: -dotSize / 2, // Center the dot
+          willChange: "transform", // GPU acceleration
+          transform: "translateZ(0)", // Force GPU layer
         }}
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
@@ -152,6 +154,8 @@ export const CustomCursor = () => {
           transition: "width 0.2s ease-out, height 0.2s ease-out, opacity 0.2s ease-out",
           marginLeft: -ringSize / 2, // Center the ring
           marginTop: -ringSize / 2, // Center the ring
+          willChange: "transform", // GPU acceleration
+          transform: "translateZ(0)", // Force GPU layer
         }}
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
@@ -159,7 +163,7 @@ export const CustomCursor = () => {
       />
 
       {/* Click Ripples */}
-      <AnimatePresence>
+      <AnimatePresence mode="popLayout">
         {ripples.map((ripple) => (
           <motion.div
             key={ripple.id}
@@ -180,6 +184,8 @@ export const CustomCursor = () => {
               backgroundColor: `rgba(${rippleColorRgb}, 0.2)`, // Use RGB from CSS variable
               width: 50,
               height: 50,
+              willChange: "transform, opacity", // GPU acceleration
+              transform: "translateZ(0)", // Force GPU layer
             }}
           />
         ))}
