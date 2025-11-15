@@ -23,13 +23,38 @@ export function ParticleBackground() {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Gaming-themed particles
-    const particleSymbols = [
-      '🎮', '⭐', '◆', '◇', '▲', '▼', '{}', '</>',
-      '■', '□', '●', '○', '★', '☆', '♦', '◈'
+    // C# Game Development Functions (60%) + Gaming Emojis (40%)
+    const csharpFunctions = [
+      'void Start()',
+      'void Update()',
+      'Instantiate()',
+      'Transform',
+      'Rigidbody',
+      'Collider',
+      'Vector3',
+      'Quaternion',
+      'GameObject',
+      'MonoBehaviour',
+      'Coroutine',
+      'Time.deltaTime',
+      'GetComponent',
+      'AddForce',
+      'Destroy',
     ];
 
-    // Enhanced Particle class with glow effects
+    const gamingEmojis = [
+      '🎮', '🕹️', '👾', '🎯', '⚡', '🚀',
+      '💻', '🔧', '⭐', '💡', '🎲', '🏆'
+    ];
+
+    // Mix 60% code, 40% emojis
+    const allParticles = [
+      ...csharpFunctions,
+      ...csharpFunctions, // Duplicate for 60%
+      ...gamingEmojis,
+    ];
+
+    // Enhanced Particle class with glow effects and better visibility
     class Particle {
       x: number;
       y: number;
@@ -56,28 +81,31 @@ export function ParticleBackground() {
         this.rotationSpeed = 0;
         this.rotation = 0;
         this.reset();
-        this.y = Math.random() * canvas.height;
+        this.y = Math.random() * (canvas?.height || 0);
       }
 
       reset() {
-        this.x = Math.random() * canvas.width;
+        this.x = Math.random() * (canvas?.width || 0);
         this.y = -50;
-        this.speed = 0.3 + Math.random() * 0.5;
-        this.symbol = particleSymbols[Math.floor(Math.random() * particleSymbols.length)];
-        this.size = 14 + Math.random() * 8;
-        this.opacity = 0.2 + Math.random() * 0.3;
-        this.drift = (Math.random() - 0.5) * 0.4;
+        this.speed = 0.3 + Math.random() * 0.4;
+        this.symbol = allParticles[Math.floor(Math.random() * allParticles.length)];
 
-        // Gaming colors: purple, cyan, pink, blue
+        // Different sizes for code vs emojis
+        const isEmoji = gamingEmojis.includes(this.symbol);
+        this.size = isEmoji ? (22 + Math.random() * 10) : (14 + Math.random() * 6); // Emoji: 22-32px, Code: 14-20px (larger)
+        this.opacity = 0.4 + Math.random() * 0.2; // 0.4-0.6 opacity (increased visibility)
+        this.drift = (Math.random() - 0.5) * 0.5; // Slower drift
+
+        // Brighter gaming colors for better visibility
         const colors = [
-          'rgba(147, 51, 234, ', // purple
-          'rgba(6, 182, 212, ',   // cyan
-          'rgba(236, 72, 153, ',  // pink
-          'rgba(59, 130, 246, '   // blue
+          'rgba(251, 146, 60, ',  // brighter orange
+          'rgba(34, 211, 238, ',  // brighter cyan
+          'rgba(168, 85, 247, ',  // brighter purple
+          'rgba(229, 231, 235, ', // brighter gray for code
         ];
         this.color = colors[Math.floor(Math.random() * colors.length)];
-        this.glowIntensity = 10 + Math.random() * 15;
-        this.rotationSpeed = (Math.random() - 0.5) * 0.02;
+        this.glowIntensity = 15 + Math.random() * 20; // Stronger glow
+        this.rotationSpeed = isEmoji ? ((Math.random() - 0.5) * 0.015) : 0; // Only rotate emojis
         this.rotation = 0;
       }
 
@@ -86,12 +114,14 @@ export function ParticleBackground() {
         this.x += this.drift;
         this.rotation += this.rotationSpeed;
 
-        if (this.y > canvas.height + 50) {
+        if (this.y > (canvas?.height || 0) + 50) {
           this.reset();
         }
       }
 
       draw() {
+        if (!ctx) return;
+
         ctx.save();
 
         // Add glow effect
@@ -99,7 +129,13 @@ export function ParticleBackground() {
         ctx.shadowColor = this.color + '0.8)';
 
         ctx.globalAlpha = this.opacity;
-        ctx.font = `${this.size}px Arial`;
+
+        // Use monospace for code, regular for emojis
+        const isEmoji = gamingEmojis.includes(this.symbol);
+        ctx.font = isEmoji
+          ? `${this.size}px Arial`
+          : `${this.size}px 'Courier New', Monaco, monospace`;
+
         ctx.fillStyle = this.color + this.opacity + ')';
 
         ctx.translate(this.x, this.y);
@@ -188,8 +224,8 @@ export function ParticleBackground() {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     };
 
-    // Particle count
-    const particleCount = window.innerWidth < 768 ? 15 : 25;
+    // Particle count - More visible particles
+    const particleCount = window.innerWidth < 768 ? 20 : 30; // Increased from 15/25 to 20/30
     const particles: Particle[] = Array.from({ length: particleCount }, () => new Particle());
 
     // Animation loop

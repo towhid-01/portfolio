@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { motion, useInView, useScroll, useTransform } from "framer-motion"
+import { motion, useInView, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -47,190 +47,25 @@ import { VisitorTracker } from "@/components/visitor-tracker"
 import { Toaster } from "@/components/ui/sonner"
 import React from "react"
 import { LoadingScreen } from "@/components/loading-screen" // Import the new component
-import { CustomCursor } from "@/components/custom-cursor" // Import the new CustomCursor component
+// import { CustomCursor } from "@/components/custom-cursor" // DISABLED - Causes cursor lag
 import { ParticleBackground } from "@/components/ParticleBackground" // Import the enhanced ParticleBackground component
 import { ThemeProvider, useTheme } from "@/contexts/ThemeContext" // Import theme context
+import { GameProvider, useGame } from "@/contexts/GameContext" // Import game context
+import { GameUI } from "@/components/game-ui" // Import game UI
+import { TiltableElement } from "@/components/tiltable-element" // Import tiltable element wrapper
+import { CardWarningIcon } from "@/components/card-warning-icon" // Import warning icon
+import {
+  projects,
+  experiences,
+  achievements,
+  skillCategories,
+  contactLinks,
+  navItems,
+  stats,
+} from "@/lib/constants" // Import all constants
+import { Navbar } from "@/components/layout" // Import Navbar component
 
 // Animated Background is now replaced by ParticleBackground component
-
-// Navigation Component
-const Navigation = () => {
-  const { theme, toggleTheme } = useTheme()
-  const [isOpen, setIsOpen] = useState(false)
-  const [activeSection, setActiveSection] = useState("hero")
-
-  const navItems = [
-    { id: "hero", label: "Home" },
-    { id: "about", label: "About" },
-    { id: "projects", label: "Projects" },
-    { id: "experience", label: "Experience" },
-    { id: "achievements", label: "Achievements" },
-    { id: "skills", label: "Skills" },
-    { id: "contact", label: "Contact" },
-    { id: "resume", label: "Resume", isExternal: true },
-  ]
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const sections = navItems.map((item) => document.getElementById(item.id))
-      const scrollPosition = window.scrollY + 100
-
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const section = sections[i]
-        if (section && section.offsetTop <= scrollPosition) {
-          setActiveSection(navItems[i].id)
-          break
-        }
-      }
-    }
-
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
-
-  const scrollToSection = (sectionId: string) => {
-    if (sectionId === "resume") {
-      window.open("/Towhid Sarker_Resume.pdf", "_blank")
-      setIsOpen(false)
-      return
-    }
-    const element = document.getElementById(sectionId)
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" })
-    }
-    setIsOpen(false)
-  }
-
-  return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.8 }}
-      className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md border-b border-primary/20 shadow-sm"
-    >
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            onClick={() => scrollToSection("hero")}
-            className="text-xl font-bold text-primary cursor-pointer"
-          >
-            <Gamepad2 className="w-6 h-6 inline mr-2" />
-            Towhid
-          </motion.div>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <motion.button
-                key={item.id}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => scrollToSection(item.id)}
-                className={`text-sm font-medium transition-colors ${
-                  activeSection === item.id && !item.isExternal
-                    ? "text-primary"
-                    : "text-foreground/70 hover:text-primary"
-                }`}
-              >
-                {item.label}
-              </motion.button>
-            ))}
-          </div>
-
-          <div className="flex items-center space-x-4">
-            {/* Theme Toggle */}
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => {
-                toggleTheme()
-              }}
-              className="relative p-3 rounded-full bg-primary/10 hover:bg-primary/20 transition-all duration-300 overflow-hidden"
-            >
-              <motion.div
-                initial={false}
-                animate={{
-                  rotate: theme === "light" ? 0 : 180,
-                  scale: theme === "light" ? 1 : 1.1,
-                }}
-                transition={{ duration: 0.5, ease: "easeInOut" }}
-                className="relative z-10"
-              >
-                {theme === "light" ? (
-                  <Moon className="w-4 h-4 text-primary" />
-                ) : (
-                  <Sun className="w-4 h-4 text-primary" />
-                )}
-              </motion.div>
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-full"
-                animate={{
-                  opacity: theme === "light" ? 0 : 1,
-                  scale: theme === "light" ? 0.8 : 1.2,
-                }}
-                transition={{ duration: 0.5 }}
-              />
-            </motion.button>
-
-            {/* Mobile Menu Toggle */}
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => {
-                setIsOpen(!isOpen)
-              }}
-              className="md:hidden p-2 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors"
-            >
-              <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.3 }}>
-                {isOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-              </motion.div>
-            </motion.button>
-          </div>
-        </div>
-
-        {/* Mobile Navigation */}
-        <motion.div
-          initial={false}
-          animate={{
-            height: isOpen ? "auto" : 0,
-            opacity: isOpen ? 1 : 0,
-            paddingTop: isOpen ? 16 : 0,
-            paddingBottom: isOpen ? 16 : 0,
-          }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
-          className="md:hidden overflow-hidden"
-        >
-          <div className="space-y-2">
-            {navItems.map((item, index) => (
-              <motion.button
-                key={item.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{
-                  opacity: isOpen ? 1 : 0,
-                  x: isOpen ? 0 : -20,
-                }}
-                transition={{
-                  duration: 0.3,
-                  delay: isOpen ? index * 0.05 : 0,
-                }}
-                whileHover={{ x: 10 }}
-                onClick={() => scrollToSection(item.id)}
-                className={`block w-full text-left px-4 py-3 rounded-lg transition-colors ${
-                  activeSection === item.id && !item.isExternal
-                    ? "bg-primary/20 text-primary"
-                    : "text-foreground/70 hover:bg-primary/10"
-                }`}
-              >
-                {item.label}
-              </motion.button>
-            ))}
-          </div>
-        </motion.div>
-      </div>
-    </motion.nav>
-  )
-}
 
 // Hero Section with Enhanced Animations
 const HeroSection = () => {
@@ -306,7 +141,7 @@ const HeroSection = () => {
                 onClick={() => {
                   document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })
                 }}
-                className="bg-primary hover:bg-primary/90 text-background px-8 py-3 rounded-full group shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden"
+                className="bg-gradient-to-r from-purple-500 to-cyan-500 hover:from-purple-600 hover:to-cyan-600 text-white px-8 py-3 rounded-full group shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden"
               >
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
@@ -324,10 +159,10 @@ const HeroSection = () => {
                   document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
                 }}
                 variant="outline"
-                className="border-primary text-primary hover:bg-primary hover:text-background px-8 py-3 rounded-full group bg-transparent shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden"
+                className="border-purple-500 text-purple-300 hover:bg-purple-500 hover:text-white px-8 py-3 rounded-full group bg-transparent shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden"
               >
                 <motion.div
-                  className="absolute inset-0 bg-primary"
+                  className="absolute inset-0 bg-purple-500"
                   initial={{ scale: 0 }}
                   whileHover={{ scale: 1 }}
                   transition={{ duration: 0.3 }}
@@ -357,11 +192,6 @@ const HeroSection = () => {
 const AboutSection = () => {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true })
-
-  const stats = [
-    { label: "Problems Solved", value: "1200+", icon: <Code className="w-6 h-6" /> },
-    { label: "Games Developed", value: "6+", icon: <Gamepad2 className="w-6 h-6" /> },
-  ]
 
   return (
     <section id="about" ref={ref} className="py-20 relative">
@@ -397,19 +227,19 @@ const AboutSection = () => {
               </p>
 
               <div className="flex flex-wrap gap-3">
-                <Badge className="bg-primary/20 text-primary border-primary/30 px-3 py-1">
+                <Badge className="bg-purple-500/20 text-purple-300 border-purple-400/40 px-3 py-1 hover:bg-purple-500/30 transition-colors">
                   <Gamepad2 className="w-3 h-3 mr-1" />
                   Unity Developer
                 </Badge>
-                <Badge className="bg-secondary/20 text-secondary border-secondary/30 px-3 py-1">
+                <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/40 px-3 py-1 hover:bg-orange-500/30 transition-colors">
                   <Puzzle className="w-3 h-3 mr-1" />
                   Puzzle Games
                 </Badge>
-                <Badge className="bg-primary/20 text-primary border-primary/30 px-3 py-1">
+                <Badge className="bg-purple-500/20 text-purple-300 border-purple-400/40 px-3 py-1 hover:bg-purple-500/30 transition-colors">
                   <FaClipboardCheck className="w-3 h-3 mr-1" />
                   Task Management
                 </Badge>
-                <Badge className="bg-secondary/20 text-secondary border-secondary/30 px-3 py-1">
+                <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/40 px-3 py-1 hover:bg-orange-500/30 transition-colors">
                   <Sparkles className="w-3 h-3 mr-1" />
                   UI Animation
                 </Badge>
@@ -430,9 +260,11 @@ const AboutSection = () => {
                     animate={isInView ? { opacity: 1, y: 0 } : {}}
                     transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
                     whileHover={{ scale: 1.05 }}
-                    className="bg-card border border-primary/20 p-8 rounded-2xl text-center hover:border-primary/40 transition-all duration-300 shadow-lg hover:shadow-xl"
+                    className="bg-slate-900/80 backdrop-blur-lg border border-purple-500/30 p-8 rounded-2xl text-center hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl"
                   >
-                    <div className="text-primary mb-4">{stat.icon}</div>
+                    <div className="text-primary mb-4">
+                      <stat.icon className="w-6 h-6" />
+                    </div>
                     <div className="text-3xl font-bold text-foreground mb-2">{stat.value}</div>
                     <div className="text-foreground/60">{stat.label}</div>
                   </motion.div>
@@ -450,70 +282,6 @@ const AboutSection = () => {
 const ProjectsSection = () => {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true })
-
-  const projects = [
-    {
-      title: "Math Escape",
-      description: "Dungeon escape game where players solve math problems to progress through levels",
-      tech: ["Unity 3D", "C#", "Level Design", "3D Movement"],
-      features: ["3D dungeon environments", "Educational math integration", "Progressive difficulty"],
-      status: "Completed",
-      type: "Professional",
-      icon: <Target className="w-5 h-5" />,
-      gradient: "from-primary to-secondary",
-    },
-    {
-      title: "Jingle Word",
-      description: "Word-making game with leaderboard system and monetization features",
-      tech: ["Unity", "C#", "AdMob", "UI Design"],
-      features: ["Leaderboard system", "User authentication", "AdMob integration"],
-      status: "Completed",
-      type: "Professional",
-      icon: <Sparkles className="w-5 h-5" />,
-      gradient: "from-secondary to-primary",
-    },
-    {
-      title: "Sudoku Game",
-      description: "Multiplayer 2D Sudoku game with dynamic UI and real-time gameplay",
-      tech: ["Unity", "C#", "Multiplayer", "UI"],
-      features: ["9x9 grid layout", "Real-time multiplayer", "Dynamic difficulty"],
-      status: "In Development",
-      type: "Personal",
-      icon: <Puzzle className="w-5 h-5" />,
-      gradient: "from-primary/80 to-secondary/80",
-    },
-    {
-      title: "Atomic Architect",
-      description: "Educational game focused on atomic structure assembly and chemistry learning",
-      tech: ["Unity", "C#", "Scriptable Objects", "Touch Controls"],
-      features: ["Interactive particles", "Scalable data management", "Progressive learning"],
-      status: "Completed",
-      type: "Educational",
-      icon: <Zap className="w-5 h-5" />,
-      gradient: "from-secondary to-primary",
-      link: "https://towhid-01.itch.io/atomic-architect", // <-- added link
-    },
-    {
-      title: "Order Up",
-      description: "Educational alphabet sorting game designed for children",
-      tech: ["Unity", "C#", "DOTween", "Children's UI"],
-      features: ["Alphabet sorting gameplay", "Smooth animations", "Child-friendly design"],
-      status: "Completed",
-      type: "Educational",
-      icon: <Palette className="w-5 h-5" />,
-      gradient: "from-primary to-secondary",
-    },
-    {
-      title: "File Manager",
-      description: "Console-based file management system with robust error handling",
-      tech: ["C#", "OOP", "Console App", "Error Handling"],
-      features: ["Core file operations", "Modular design", "Scalable architecture"],
-      status: "Completed",
-      type: "Utility",
-      icon: <Database className="w-5 h-5" />,
-      gradient: "from-secondary/80 to-primary/80",
-    },
-  ]
 
   return (
     <section id="projects" ref={ref} className="py-20 relative">
@@ -548,7 +316,7 @@ const ProjectsSection = () => {
               }}
               className="group perspective-1000"
             >
-              <Card className="bg-card border-primary/20 backdrop-blur-sm h-full hover:border-primary/40 transition-all duration-500 overflow-hidden shadow-lg hover:shadow-2xl relative">
+              <Card className="bg-slate-900/80 backdrop-blur-lg border-purple-500/30 h-full hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-500 overflow-hidden shadow-xl relative">
                 {/* Animated background gradient */}
                 <motion.div
                   className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
@@ -574,7 +342,7 @@ const ProjectsSection = () => {
                           transition: { duration: 0.6 },
                         }}
                       >
-                        {project.icon}
+                        <project.icon className="w-5 h-5" />
                       </motion.div>
                       <div>
                         <CardTitle className="text-lg text-foreground group-hover:text-primary transition-colors duration-300">
@@ -598,7 +366,7 @@ const ProjectsSection = () => {
                           <motion.div whileHover={{ scale: 1.1 }} transition={{ duration: 0.2 }}>
                             <Badge
                               variant="outline"
-                              className="text-xs border-primary/30 text-primary hover:bg-primary/10 transition-all duration-300"
+                              className="text-xs border-orange-500/40 text-orange-400 hover:bg-orange-500/20 transition-all duration-300"
                             >
                               {project.type}
                             </Badge>
@@ -645,7 +413,7 @@ const ProjectsSection = () => {
                       >
                         <Badge
                           variant="outline"
-                          className="text-xs border-secondary/30 text-secondary hover:bg-secondary/10 transition-all duration-300 cursor-pointer"
+                          className="text-xs border-purple-400/40 text-purple-300 hover:bg-purple-500/20 hover:border-purple-400/60 cursor-pointer transition-all duration-300"
                         >
                           {tech}
                         </Badge>
@@ -662,10 +430,10 @@ const ProjectsSection = () => {
                       }}
                       variant="outline"
                       size="sm"
-                      className="w-full border-primary/30 text-primary hover:bg-primary hover:text-background group bg-transparent mt-4 relative overflow-hidden transition-all duration-300"
+                      className="w-full border-purple-500/40 text-purple-300 hover:bg-purple-500 hover:text-white group bg-transparent mt-4 relative overflow-hidden transition-all duration-300"
                     >
                       <motion.div
-                        className="absolute inset-0 bg-primary"
+                        className="absolute inset-0 bg-purple-500"
                         initial={{ scale: 0, opacity: 0 }}
                         whileHover={{ scale: 1, opacity: 1 }}
                         transition={{ duration: 0.3 }}
@@ -688,39 +456,6 @@ const ProjectsSection = () => {
 const ExperienceSection = () => {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true })
-
-  const experiences = [
-    {
-      company: "Qiulin Technologies",
-      position: "Executive – Project & Task Coordination",
-      duration: "March 2025 – Present",
-      location: "Uttara, Dhaka",
-      type: "Full-time",
-      responsibilities: [
-        "Assigned and monitored tasks for a 25–30 member team to ensure smooth daily operations",
-        "Managed onboarding, organized training sessions, and evaluated employee performance",
-        "Created performance reports and salary sheets in Excel based on task completion data",
-        "Improved team productivity through strategic task coordination and evaluation metrics",
-      ],
-      icon: <Briefcase className="w-5 h-5" />,
-      gradient: "from-primary to-secondary",
-    },
-    {
-      company: "Riseup Labs",
-      position: "Game Developer – Intern",
-      duration: "Aug 2024 – Dec 2024",
-      location: "Uttara, Dhaka",
-      type: "Internship",
-      responsibilities: [
-        "Built UI screens, login system, and leaderboard features in Unity using C#",
-        "Designed levels and implemented smooth character movement, button interactions",
-        "Integrated AdMob for monetization and participated in gameplay testing",
-        "Contributed to debugging and iteration based on user feedback",
-      ],
-      icon: <Gamepad2 className="w-5 h-5" />,
-      gradient: "from-secondary to-primary",
-    },
-  ]
 
   return (
     <section id="experience" ref={ref} className="py-20 relative">
@@ -750,19 +485,19 @@ const ExperienceSection = () => {
                 <div
                   className={`w-8 h-8 bg-gradient-to-br ${exp.gradient} rounded-full mr-4 z-10 flex items-center justify-center text-background shadow-lg`}
                 >
-                  {exp.icon}
+                  <exp.icon className="w-5 h-5" />
                 </div>
                 <div className="flex-1 h-px bg-gradient-to-r from-primary to-transparent"></div>
               </div>
 
-              <Card className="bg-card border-primary/20 backdrop-blur-sm ml-12 hover:border-primary/40 transition-all duration-300 shadow-lg hover:shadow-xl">
+              <Card className="bg-slate-900/80 backdrop-blur-lg ml-12 border-purple-500/30 hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl">
                 <CardHeader>
                   <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                     <div>
                       <CardTitle className="text-xl text-foreground mb-2">{exp.position}</CardTitle>
                       <div className="flex items-center gap-2 mb-2">
                         <p className="text-primary font-semibold">{exp.company}</p>
-                        <Badge variant="outline" className="text-xs border-secondary/30 text-secondary">
+                        <Badge variant="outline" className="text-xs border-orange-500/40 text-orange-400 hover:bg-orange-500/20">
                           {exp.type}
                         </Badge>
                       </div>
@@ -804,43 +539,6 @@ const AchievementsSection = () => {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true })
 
-  const achievements = [
-    {
-      title: "Programming Contests",
-      items: [
-        { name: "Sec Inter University Junior Programming Contest 2022", rank: "Rank 43", team: "UITS_Wreckers_Exist" },
-        {
-          name: "6th DRMC Int’l Tech Carnival 2023 – Programming Contest [Preliminary Round]",
-          rank: "Rank 13",
-          team: "CircleCycle",
-        },
-        { name: "UITS Intra University Programming Contest 2022", rank: "Rank 10", team: "UITS_CircleCycle" },
-      ],
-      icon: <Trophy className="w-6 h-6" />,
-      gradient: "from-yellow-500 to-orange-500",
-    },
-    {
-      title: "Competitive Programming",
-      items: [
-        { name: "Total Problems Solved", rank: "1200+", team: "Multiple Online Judges" },
-        { name: "Codeforces: __PrEdAToR__", rank: "Max: 1110", team: "750+ Solved" },
-        { name: "LeetCode: _PrEdAToR_", rank: "Max: 1511", team: "150+ Solved" },
-      ],
-      icon: <Code className="w-6 h-6" />,
-      gradient: "from-primary to-secondary",
-    },
-    {
-      title: "Academic Recognition",
-      items: [
-        { name: "Poster Presentation Competition", rank: "3rd Place", team: "Team Leader" },
-        { name: "University CGPA", rank: "3.09/4.00", team: "BSc CSE" },
-        { name: "Leadership Excellence", rank: "Proven", team: "Multiple Projects" },
-      ],
-      icon: <Award className="w-6 h-6" />,
-      gradient: "from-secondary to-primary",
-    },
-  ]
-
   return (
     <section id="achievements" ref={ref} className="py-20 relative">
       <div className="container mx-auto px-4">
@@ -862,11 +560,11 @@ const AchievementsSection = () => {
               transition={{ duration: 0.8, delay: index * 0.2 }}
               whileHover={{ y: -8, scale: 1.02 }}
             >
-              <Card className="bg-card border-primary/20 backdrop-blur-sm h-full hover:border-primary/40 transition-all duration-300 shadow-lg hover:shadow-xl">
+              <Card className="bg-slate-900/80 backdrop-blur-lg h-full border-purple-500/30 hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl">
                 <CardHeader>
                   <div className="flex items-center gap-3 mb-4">
                     <div className={`p-3 bg-gradient-to-br ${category.gradient} bg-opacity-20 rounded-lg text-primary`}>
-                      {category.icon}
+                      <category.icon className="w-5 h-5" />
                     </div>
                     <CardTitle className="text-lg text-foreground">{category.title}</CardTitle>
                   </div>
@@ -880,7 +578,7 @@ const AchievementsSection = () => {
                         initial={{ opacity: 0, x: -20 }}
                         animate={isInView ? { opacity: 1, x: 0 } : {}}
                         transition={{ duration: 0.5, delay: index * 0.2 + i * 0.1 }}
-                        className="bg-background/50 p-3 rounded-lg border border-primary/10 hover:border-primary/30 transition-colors"
+                        className="bg-background/50 p-3 rounded-lg border border-purple-500/20 hover:border-purple-500/40 transition-colors"
                       >
                         <div className="flex items-center justify-between mb-1">
                           <h4 className="text-sm font-semibold text-foreground leading-tight">{item.name}</h4>
@@ -904,37 +602,40 @@ const AchievementsSection = () => {
   )
 }
 
-// Skills Section with Enhanced Interactive Elements
+// Skills Section with Alignment Game
 const SkillsSection = () => {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true })
+  const { fixElement, isElementFixed, isGroupCompleted, registerElement } = useGame()
 
-  const skillCategories = [
-    {
-      title: "Game Dev Tools",
-      icon: <Gamepad2 className="w-5 h-5" />,
-      skills: ["Unity 2D/3D", "DOTween", "Particle System", "Unity UI"],
-      gradient: "from-primary to-secondary",
-    },
-    {
-      title: "Programming",
-      icon: <Code className="w-5 h-5" />,
-      skills: ["C++", "C#", "JavaScript", "MySQL"],
-      gradient: "from-secondary to-primary",
-    },
-    {
-      title: "Dev Tools",
-      icon: <Settings className="w-5 h-5" />,
-      skills: ["Git", "GitHub", "Visual Studio", "Rider", "Linux"],
-      gradient: "from-primary/80 to-secondary/80",
-    },
-    {
-      title: "Other Skills",
-      icon: <Layers className="w-5 h-5" />,
-      skills: ["AR Foundation (basic)", "Level Design", "OOP", "Version Control"],
-      gradient: "from-secondary/80 to-primary/80",
-    },
-  ]
+  // Generate random rotations for each badge on mount (FORCED rotation -30 to +30 degrees)
+  const [badgeRotations] = useState(() => {
+    return skillCategories.map(category =>
+      category.skills.map(() => Math.random() * 60 - 30) // -30 to +30 degrees
+    )
+  })
+
+  // Register all badges on mount
+  useEffect(() => {
+    skillCategories.forEach((category, categoryIndex) => {
+      category.skills.forEach((skill, badgeIndex) => {
+        const badgeId = `badge-${categoryIndex}-${badgeIndex}`
+        registerElement(badgeId, `card-${categoryIndex}`)
+      })
+    })
+  }, [registerElement])
+
+  const handleBadgeFix = (categoryIndex: number, badgeIndex: number) => {
+    const badgeId = `badge-${categoryIndex}-${badgeIndex}`
+    if (!isElementFixed(badgeId)) {
+      fixElement(badgeId) // +25 points per badge fixed
+    }
+  }
+
+  // Check if all badges in a card are fixed
+  const isCardComplete = (categoryIndex: number) => {
+    return isGroupCompleted(`card-${categoryIndex}`)
+  }
 
   return (
     <section id="skills" ref={ref} className="py-20 relative">
@@ -950,113 +651,129 @@ const SkillsSection = () => {
         </motion.h2>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-          {skillCategories.map((category, index) => (
-            <motion.div
-              key={category.title}
-              initial={{ opacity: 0, y: 50 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{
-                duration: 0.8,
-                delay: index * 0.1,
-                type: "spring",
-                stiffness: 100,
-              }}
-              whileHover={{
-                scale: 1.05,
-                y: -10,
-                rotate: 1,
-                transition: { duration: 0.3, type: "spring", stiffness: 300 },
-              }}
-              className="group/card"
-            >
-              <Card className="bg-card border-primary/20 backdrop-blur-sm h-full hover:border-primary/50 hover:shadow-[0_0_30px_rgba(147,51,234,0.3)] transition-all duration-500 shadow-lg relative overflow-hidden group">
-                {/* Animated background */}
-                <motion.div
-                  className={`absolute inset-0 bg-gradient-to-br ${category.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}
-                />
-
-                {/* Floating particles effect */}
-                <motion.div className="absolute inset-0 pointer-events-none" initial={false}>
-                  {[...Array(3)].map((_, i) => (
-                    <motion.div
-                      key={i}
-                      className="absolute w-1 h-1 bg-primary/30 rounded-full"
-                      animate={{
-                        x: [0, 100, 0],
-                        y: [0, -50, 0],
-                        opacity: [0, 1, 0],
-                      }}
-                      transition={{
-                        duration: 3,
-                        delay: i * 0.5,
-                        repeat: Number.POSITIVE_INFINITY,
-                        ease: "easeInOut",
-                      }}
-                      style={{
-                        left: `${20 + i * 30}%`,
-                        top: `${50 + i * 10}%`,
-                      }}
-                    />
-                  ))}
-                </motion.div>
-
-                <CardHeader className="pb-4 relative z-10">
-                  <div className="flex items-center gap-3 mb-4">
-                    <motion.div
-                      className={`p-3 bg-gradient-to-br ${category.gradient} bg-opacity-20 rounded-lg text-primary`}
-                      whileHover={{
-                        scale: 1.2,
-                        rotate: [0, -10, 10, 0],
-                        transition: { duration: 0.5 },
-                      }}
-                    >
-                      {category.icon}
-                    </motion.div>
-                    <CardTitle className="text-lg text-foreground group-hover:text-primary transition-colors duration-300">
-                      {category.title}
-                    </CardTitle>
-                  </div>
-                </CardHeader>
-
-                <CardContent className="pt-0 relative z-10">
-                  <div className="flex flex-wrap gap-2">
-                    {category.skills.map((skill, i) => (
+          {skillCategories.map((category, categoryIndex) => (
+            <TiltableElement key={category.title} id={`skill-card-${categoryIndex}`} className="h-full">
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{
+                  duration: 0.8,
+                  delay: categoryIndex * 0.1,
+                  type: "spring",
+                  stiffness: 100,
+                }}
+                whileHover={{
+                  scale: 1.03,
+                  y: -8,
+                  transition: { duration: 0.3, type: "spring", stiffness: 300 },
+                }}
+                className="h-full"
+                style={{
+                  willChange: "transform",
+                  transform: "translateZ(0)",
+                }}
+              >
+                <Card className="bg-slate-900/80 backdrop-blur-lg border-purple-500/30 h-full hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl relative overflow-hidden">
+                  {/* Alert Icon - Disappears when all badges are fixed */}
+                  <AnimatePresence>
+                    {!isCardComplete(categoryIndex) && (
                       <motion.div
-                        key={skill}
-                        initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                        animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}}
-                        transition={{
-                          duration: 0.4,
-                          delay: index * 0.1 + i * 0.05,
-                          type: "spring",
-                          stiffness: 200,
-                        }}
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0, opacity: 0 }}
+                        className="absolute top-3 right-3 z-20 text-2xl"
+                        title="Fix all misaligned badges!"
+                      >
+                        ⚠️
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Animated background */}
+                  <motion.div
+                    className={`absolute inset-0 bg-gradient-to-br ${category.gradient} opacity-0 hover:opacity-10 transition-opacity duration-500`}
+                  />
+
+                  <CardHeader className="pb-4 relative z-10">
+                    <div className="flex items-center gap-3 mb-4">
+                      <motion.div
+                        className={`p-3 bg-gradient-to-br ${category.gradient} bg-opacity-20 rounded-lg text-primary`}
                         whileHover={{
                           scale: 1.15,
-                          y: -5,
-                          rotate: [0, -5, 5, 0],
+                          boxShadow: "0 0 20px rgba(147, 51, 234, 0.4)",
                           transition: { duration: 0.3 },
                         }}
-                        whileTap={{ scale: 0.95 }}
                       >
-                        <Badge
-                          variant="outline"
-                          className="border-primary/30 text-primary hover:bg-primary/20 hover:border-primary/50 cursor-pointer transition-all duration-300 text-xs px-2 py-1 relative overflow-hidden group/badge"
-                        >
-                          <motion.div
-                            className="absolute inset-0 bg-primary/10"
-                            initial={{ scale: 0 }}
-                            whileHover={{ scale: 1 }}
-                            transition={{ duration: 0.3 }}
-                          />
-                          <span className="relative z-10">{skill}</span>
-                        </Badge>
+                        <category.icon className="w-6 h-6" />
                       </motion.div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
+                      <CardTitle className="text-lg text-foreground group-hover:text-primary transition-colors duration-300">
+                        {category.title}
+                      </CardTitle>
+                    </div>
+                  </CardHeader>
+
+                  <CardContent className="pt-0 relative z-10">
+                    <div className="flex flex-wrap gap-2">
+                      {category.skills.map((skill, badgeIndex) => {
+                        const badgeId = `badge-${categoryIndex}-${badgeIndex}`
+                        const rotation = badgeRotations[categoryIndex][badgeIndex]
+                        const isFixed = isElementFixed(badgeId)
+
+                        return (
+                          <motion.div
+                            key={skill}
+                            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                            animate={isInView ? {
+                              opacity: 1,
+                              scale: 1,
+                              y: 0,
+                              rotate: isFixed ? 0 : rotation // Rotate to 0 when fixed
+                            } : {}}
+                            transition={{
+                              duration: 0.4,
+                              delay: categoryIndex * 0.1 + badgeIndex * 0.05,
+                              type: "spring",
+                              stiffness: 200,
+                            }}
+                            whileHover={!isFixed ? {
+                              scale: 1.08,
+                              y: -2,
+                              transition: { duration: 0.2 },
+                            } : {}}
+                            onHoverStart={() => {
+                              if (!isFixed) {
+                                handleBadgeFix(categoryIndex, badgeIndex)
+                              }
+                            }}
+                            style={{
+                              transformOrigin: "center center",
+                            }}
+                          >
+                            <Badge
+                              variant="outline"
+                              className={`border-purple-400/40 text-purple-300 ${
+                                !isFixed ? 'hover:bg-purple-500/20 hover:border-purple-400/60' : 'bg-green-500/10 border-green-400/40'
+                              } cursor-pointer transition-all duration-300 text-xs px-3 py-1 relative overflow-hidden`}
+                            >
+                              {/* Wipe animation on fix */}
+                              {isFixed && (
+                                <motion.div
+                                  initial={{ x: '-100%' }}
+                                  animate={{ x: '100%' }}
+                                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                                  className="absolute inset-0 bg-gradient-to-r from-transparent via-green-400/30 to-transparent"
+                                />
+                              )}
+                              <span className="relative z-10">{skill}</span>
+                            </Badge>
+                          </motion.div>
+                        )
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </TiltableElement>
           ))}
         </div>
       </div>
@@ -1092,92 +809,76 @@ const ContactSection = () => {
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true)
 
-    try {
-      // Using Formspree - replace YOUR_FORM_ID with actual Formspree form ID
-      // Get free form ID from https://formspree.io/
-      const formspreeEndpoint = "https://formspree.io/f/YOUR_FORM_ID"
+    // ============================================================
+    // TODO: EMAIL FUNCTIONALITY - NEEDS SETUP
+    // Start of email code (commented out for now)
+    // ============================================================
 
-      const response = await fetch(formspreeEndpoint, {
+    // Temporarily disabled - showing coming soon message
+    toast.info("Email integration coming soon!", {
+      description: "Please contact me directly at towhid.sarker3@gmail.com for now.",
+    })
+    setIsSubmitting(false)
+    reset()
+
+    /*
+    // COMMENTED OUT - To enable email:
+    // 1. Get API key from https://web3forms.com/
+    // 2. Replace YOUR_WEB3FORMS_KEY below
+    // 3. Uncomment this entire block
+    // 4. Remove the toast.info and early return above
+
+    try {
+      const web3FormsKey = "YOUR_WEB3FORMS_KEY" // REPLACE THIS
+
+      console.log("Sending email with data:", {
+        name: data.name,
+        email: data.email,
+        projectType: data.projectType,
+        messageLength: data.message.length,
+      })
+
+      const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
         body: JSON.stringify({
+          access_key: web3FormsKey,
           name: data.name,
           email: data.email,
-          projectType: data.projectType,
-          message: data.message,
-          _subject: `New Portfolio Contact: ${data.projectType}`,
+          subject: `Portfolio Contact: ${data.projectType}`,
+          message: `Project Type: ${data.projectType}\n\nFrom: ${data.name} (${data.email})\n\nMessage:\n${data.message}`,
+          from_name: data.name,
+          replyto: data.email,
         }),
       })
 
-      // Log response for debugging
-      console.log("Response status:", response.status)
       const result = await response.json()
-      console.log("Response data:", result)
 
-      if (response.ok) {
+      if (response.ok && result.success) {
         toast.success("Message sent successfully!", {
           description: "Thank you for reaching out. I'll get back to you soon!",
         })
         reset()
       } else {
-        // Show specific error message
-        const errorMsg = result.error || result.errors?.map((e: any) => e.message).join(", ") || "Unknown error"
-        console.error("API Error:", errorMsg)
-        throw new Error(errorMsg)
+        throw new Error(result.message || "Failed to send message")
       }
     } catch (error) {
-      // Enhanced error logging
-      console.error("Form submission error details:", {
-        error,
-        message: error instanceof Error ? error.message : "Unknown error",
-        type: typeof error,
-      })
-
+      console.error("Form submission error:", error)
       toast.error("Failed to send message", {
-        description: `Error: ${error instanceof Error ? error.message : "Please try again or contact me directly via email."}`,
+        description: "Please contact me directly at towhid.sarker3@gmail.com",
       })
     } finally {
       setIsSubmitting(false)
     }
-  }
+    */
 
-  const contactLinks = [
-    {
-      name: "Email",
-      value: "towhid.sarker3@gmail.com",
-      icon: <Mail className="w-5 h-5" />,
-      href: "mailto:towhid.sarker3@gmail.com",
-      gradient: "from-primary to-secondary",
-    },
-    {
-      name: "Discord",
-      value: "towhid", // Replace with your Discord username
-      icon: <MessageCircle className="w-5 h-5" />,
-      href: "#", // Discord doesn't have direct links, or use discord.com/users/YOUR_USER_ID
-      gradient: "from-secondary to-primary",
-    },
-    {
-      name: "LinkedIn",
-      value: "Professional Network",
-      icon: <Linkedin className="w-5 h-5" />,
-      href: "https://www.linkedin.com/in/towhid-sarker/",
-      target: "_blank",
-      rel: "noopener noreferrer",
-      gradient: "from-primary/80 to-secondary/80",
-    },
-    {
-      name: "GitHub",
-      value: "Code Repository",
-      icon: <Github className="w-5 h-5" />,
-      href: "https://github.com/towhid-01",
-      target: "_blank",
-      rel: "noopener noreferrer",
-      gradient: "from-secondary/80 to-primary/80",
-    },
-  ]
+    // ============================================================
+    // End of email code
+    // ============================================================
+  }
 
   return (
     <section id="contact" ref={ref} className="py-20 relative">
@@ -1217,10 +918,12 @@ const ContactSection = () => {
                   animate={isInView ? { opacity: 1, x: 0 } : {}}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   whileHover={{ x: 10, scale: 1.02 }}
-                  className="flex items-center gap-4 p-4 bg-card border border-primary/20 rounded-lg hover:border-primary/40 transition-all duration-300 group shadow-lg hover:shadow-xl"
+                  className="flex items-center gap-4 p-4 bg-slate-900/80 backdrop-blur-lg border border-purple-500/30 rounded-lg hover:border-purple-500/60 hover:shadow-[0_0_20px_rgba(147,51,234,0.3)] transition-all duration-300 group shadow-lg"
                 >
                   <div className={`p-3 bg-gradient-to-br ${link.gradient} bg-opacity-20 rounded-lg`}>
-                    <div className="text-primary group-hover:scale-110 transition-transform">{link.icon}</div>
+                    <div className="text-primary group-hover:scale-110 transition-transform">
+                      <link.icon className="w-5 h-5" />
+                    </div>
                   </div>
                   <div>
                     <p className="text-foreground font-medium">{link.name}</p>
@@ -1236,7 +939,7 @@ const ContactSection = () => {
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8 }}
           >
-            <Card className="bg-card border-primary/20 backdrop-blur-sm hover:border-primary/40 transition-all duration-300 shadow-lg hover:shadow-xl">
+            <Card className="bg-slate-900/80 backdrop-blur-lg border-purple-500/30 hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl">
               <CardHeader>
                 <CardTitle className="text-xl text-foreground flex items-center gap-2">
                   <MessageCircle className="w-5 h-5 text-primary" />
@@ -1254,7 +957,7 @@ const ContactSection = () => {
                       <Input
                         {...register("name")}
                         placeholder="Your Name"
-                        className="bg-background/50 border-primary/20 text-foreground placeholder:text-foreground/40 focus:border-primary transition-colors"
+                        className="bg-background/50 border-purple-500/30 text-foreground placeholder:text-foreground/40 focus:border-purple-500 transition-colors"
                         disabled={isSubmitting}
                       />
                       {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
@@ -1264,7 +967,7 @@ const ContactSection = () => {
                         {...register("email")}
                         placeholder="Your Email"
                         type="email"
-                        className="bg-background/50 border-primary/20 text-foreground placeholder:text-foreground/40 focus:border-primary transition-colors"
+                        className="bg-background/50 border-purple-500/30 text-foreground placeholder:text-foreground/40 focus:border-purple-500 transition-colors"
                         disabled={isSubmitting}
                       />
                       {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
@@ -1275,7 +978,7 @@ const ContactSection = () => {
                     <Input
                       {...register("projectType")}
                       placeholder="Project Type (Game Dev, Collaboration, etc.)"
-                      className="bg-background/50 border-primary/20 text-foreground placeholder:text-foreground/40 focus:border-primary transition-colors"
+                      className="bg-background/50 border-purple-500/30 text-foreground placeholder:text-foreground/40 focus:border-purple-500 transition-colors"
                       disabled={isSubmitting}
                     />
                     {errors.projectType && <p className="text-red-500 text-xs mt-1">{errors.projectType.message}</p>}
@@ -1286,7 +989,7 @@ const ContactSection = () => {
                       {...register("message")}
                       placeholder="Tell me about your project or idea..."
                       rows={5}
-                      className="bg-background/50 border-primary/20 text-foreground placeholder:text-foreground/40 focus:border-primary resize-none transition-colors"
+                      className="bg-background/50 border-purple-500/30 text-foreground placeholder:text-foreground/40 focus:border-purple-500 resize-none transition-colors"
                       disabled={isSubmitting}
                     />
                     {errors.message && <p className="text-red-500 text-xs mt-1">{errors.message.message}</p>}
@@ -1295,7 +998,7 @@ const ContactSection = () => {
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-background group shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full bg-gradient-to-r from-purple-500 to-cyan-500 hover:from-purple-600 hover:to-cyan-600 text-white group shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isSubmitting ? (
                       <>
@@ -1338,13 +1041,15 @@ const MainContent = () => {
   }, [])
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-all duration-500">
-      <GoogleAnalytics />
-      <Toaster />
-      <LoadingScreen isLoading={isLoading} /> {/* Render loading screen */}
-      <CustomCursor /> {/* Add the custom cursor here */}
-      <ParticleBackground />
-      <Navigation />
+    <GameProvider>
+      <div className="min-h-screen bg-background text-foreground transition-all duration-500">
+        <GoogleAnalytics />
+        <Toaster />
+        <LoadingScreen isLoading={isLoading} /> {/* Render loading screen */}
+        {/* <CustomCursor /> DISABLED - Causes cursor lag */}
+        <ParticleBackground />
+        <GameUI /> {/* Add game UI */}
+        <Navbar />
       <HeroSection />
       <AboutSection />
       <ProjectsSection />
@@ -1374,7 +1079,8 @@ const MainContent = () => {
           </div>
         </div>
       </footer>
-    </div>
+      </div>
+    </GameProvider>
   )
 }
 

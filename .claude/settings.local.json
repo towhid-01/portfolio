@@ -12,7 +12,10 @@
       "Bash(npm run build:*)",
       "Bash(timeout 10 npm run dev)",
       "Bash(exit 0)",
-      "Bash(nul)"
+      "Bash(nul)",
+      "Bash(npm run dev:*)",
+      "Bash(timeout 40 echo:*)",
+      "Bash(timeout /t 5)"
     ],
     "deny": [],
     "ask": []

@@ -32,31 +32,40 @@
   }
 
   :root[data-theme="dark"] {
-    --background: 0 15% 9%; /* #1a1414 */
-    --foreground: 0 0% 95%; /* #f3f3f3 */
-    --card: 0 15% 12%; /* rgba(42, 31, 31, 0.95) */
-    --card-foreground: 0 0% 95%;
-    --popover: 0 15% 12%;
-    --popover-foreground: 0 0% 95%;
-    --primary: 0 40% 34%; /* #803636 */
-    --primary-foreground: 0 0% 95%;
-    --secondary: 28 50% 64%; /* #d4a373 */
-    --secondary-foreground: 0 15% 9%;
-    --muted: 0 15% 12%;
-    --muted-foreground: 215 14% 65%;
-    --accent: 28 50% 64%;
-    --accent-foreground: 0 15% 9%;
+    /* Gaming-inspired Dark Mode Palette */
+    --background: 233 56% 10%; /* #0a0e27 - Deep purple-blue base */
+    --foreground: 220 13% 91%; /* #e5e7eb - Light gray text */
+    --card: 228 39% 13%; /* #14192d - Dark card background (rgba 20, 25, 45) */
+    --card-foreground: 220 13% 91%;
+    --popover: 228 39% 13%;
+    --popover-foreground: 220 13% 91%;
+    --primary: 258 90% 66%; /* #8b5cf6 - Vivid purple accent */
+    --primary-foreground: 220 13% 91%;
+    --secondary: 220 9% 65%; /* #9ca3af - Secondary gray text */
+    --secondary-foreground: 233 56% 10%;
+    --muted: 228 39% 15%;
+    --muted-foreground: 220 9% 65%;
+    --accent: 258 90% 66%; /* #8b5cf6 - Vivid purple highlights */
+    --accent-foreground: 220 13% 91%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 40% 34% / 0.2; /* #803636 with 0.2 opacity */
-    --input: 0 40% 34% / 0.1; /* #803636 with 0.1 opacity */
-    --ring: 0 40% 34%;
+    --border: 258 90% 66% / 0.3; /* Purple border with 0.3 opacity */
+    --input: 258 90% 66% / 0.2;
+    --ring: 258 90% 66%;
     --radius: 0.5rem;
 
+    /* Button Colors */
+    --button-primary: 263 70% 50%; /* #6d28d9 - Button base */
+    --button-primary-hover: 262 83% 58%; /* #7c3aed - Button hover */
+
+    /* Status Colors */
+    --warning: 38 92% 50%; /* #f59e0b - Alert/warning amber */
+    --success: 160 84% 39%; /* #10b981 - Success green */
+
     /* Custom Cursor Colors - Dark Theme */
-    --cursor-dot-color: 0 60% 89%; /* #F6D6D6 */
-    --cursor-ring-color: 28 50% 64%; /* #D4A373 */
-    --ripple-color-rgb: 212, 163, 115; /* RGB for #D4A373 */
+    --cursor-dot-color: 258 90% 66%; /* Purple cursor */
+    --cursor-ring-color: 258 90% 66%;
+    --ripple-color-rgb: 139, 92, 246; /* RGB for purple */
   }
 
   * {
@@ -64,16 +73,85 @@
   }
   body {
     @apply bg-background text-foreground;
+    cursor: auto !important; /* Ensure cursor is always visible */
+  }
+
+  html {
+    cursor: auto !important;
   }
 }
 
-/* Hide default cursor only on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
+/* Dark Mode Gradient Background */
+:root[data-theme="dark"] body {
+  background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #2d1b4e 100%);
+  background-attachment: fixed;
+}
+
+/* Enhanced Card Styles for Dark Mode */
+:root[data-theme="dark"] .card-enhanced {
+  background: rgba(20, 25, 45, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* ========================================
+   PERFORMANCE OPTIMIZATIONS
+   ======================================== */
+
+/* GPU Acceleration for all animated elements */
+.will-change-transform {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize motion.div elements */
+[data-framer-component-type] {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
+/* Smooth scrolling with GPU acceleration */
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Optimize images and media */
+img, video, canvas {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Optimize hover effects */
+@media (hover: hover) {
+  .hover-optimize:hover {
+    transform: translateZ(0) scale(1.05);
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* DISABLED - Cursor hidden for custom cursor (causing lag) */
+/* @media (hover: hover) and (pointer: fine) {
   html,
   body {
     cursor: none;
   }
-}
+} */
 
 /* Ensure default cursor on touch devices */
 @media (hover: none) or (pointer: coarse) {
