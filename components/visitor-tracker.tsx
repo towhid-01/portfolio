@@ -6,10 +6,17 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Eye } from "lucide-react"
 
 // ✅ Use only environment variables (set in .env.local or hosting)
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
+let supabase: ReturnType<typeof createClient> | null = null
+
+function getSupabase() {
+  if (!supabase && supabaseUrl && supabaseAnonKey) {
+    supabase = createClient(supabaseUrl, supabaseAnonKey)
+  }
+  return supabase
+}
 
 export function VisitorTracker() {
   const [uniqueVisitors, setUniqueVisitors] = useState<number | null>(null)
@@ -19,13 +26,20 @@ export function VisitorTracker() {
   useEffect(() => {
     const trackVisitor = async () => {
       try {
+        const supabaseClient = getSupabase()
+        if (!supabaseClient) {
+          // Supabase not configured - skip tracking but don't show error
+          setUniqueVisitors(0)
+          return
+        }
+
         const ipResponse = await fetch("https://api.ipify.org?format=json")
         if (!ipResponse.ok) throw new Error(`Failed to fetch IP: ${ipResponse.statusText}`)
         const ipData = await ipResponse.json()
         const ipAddress = ipData.ip
         setCurrentIp(ipAddress)
 
-        const { data: existingVisitors, error: selectError } = await supabase
+        const { data: existingVisitors, error: selectError } = await supabaseClient
           .from("visitors")
           .select("ip_address")
           .eq("ip_address", ipAddress)
@@ -33,7 +47,7 @@ export function VisitorTracker() {
         if (selectError) throw new Error(`Supabase select error: ${selectError.message}`)
 
         if (!existingVisitors || existingVisitors.length === 0) {
-          const { error: insertError } = await supabase
+          const { error: insertError } = await supabaseClient
             .from("visitors")
             .insert({ ip_address: ipAddress })
 
@@ -46,7 +60,7 @@ export function VisitorTracker() {
           }
         }
 
-        const { count, error: countError } = await supabase
+        const { count, error: countError } = await supabaseClient
           .from("visitors")
           .select("ip_address", { count: "exact", head: true })
 
