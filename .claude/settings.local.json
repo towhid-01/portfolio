@@ -15,7 +15,11 @@
       "Bash(nul)",
       "Bash(npm run dev:*)",
       "Bash(timeout 40 echo:*)",
-      "Bash(timeout /t 5)"
+      "Bash(timeout /t 5)",
+      "Bash(timeout /t 2)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(powershell:*)"
     ],
     "deny": [],
     "ask": []
