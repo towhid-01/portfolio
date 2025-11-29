@@ -1,11 +1,26 @@
-import { Briefcase, Gamepad2 } from "lucide-react"
+﻿import { Briefcase, Gamepad2 } from "lucide-react"
 import type { Experience } from "@/types"
 
 export const experiences: Experience[] = [
   {
+    company: "VisionTillion",
+    position: "Unity Game Developer",
+    duration: "September 2025 – Present",
+    location: "Remote",
+    type: "Full-time",
+    responsibilities: [
+      "Developing and implementing game UI/UX systems with DOTween animations and localization support for mobile platforms",
+      "Creating interactive user interfaces including menus, HUDs, and gameplay flows while maintaining visual consistency",
+      "Managing technical documentation and design specifications to streamline team collaboration and development workflow",
+      "Optimizing game performance through debugging and close collaboration with artists and designers to ensure quality delivery",
+    ],
+    icon: Gamepad2,
+    gradient: "from-purple-500 to-cyan-500",
+  },
+  {
     company: "Qiulin Technologies",
     position: "Executive – Project & Task Coordination",
-    duration: "March 2025 – Present",
+    duration: "March 2025 – August 2025",
     location: "Uttara, Dhaka",
     type: "Full-time",
     responsibilities: [
