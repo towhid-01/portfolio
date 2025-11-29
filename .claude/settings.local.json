@@ -19,7 +19,8 @@
       "Bash(timeout /t 2)",
       "Bash(netstat:*)",
       "Bash(findstr:*)",
-      "Bash(powershell:*)"
+      "Bash(powershell:*)",
+      "Bash(tasklist:*)"
     ],
     "deny": [],
     "ask": []
