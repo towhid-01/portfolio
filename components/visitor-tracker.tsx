@@ -5,14 +5,6 @@ import { createClient } from "@supabase/supabase-js"
 import { Card, CardContent } from "@/components/ui/card"
 import { Eye } from "lucide-react"
 
-console.log("🔍 ENV CHECK:", {
-  hasUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
-  hasKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  url: process.env.NEXT_PUBLIC_SUPABASE_URL?.substring(0, 20) + "...", // Only show first 20 chars
-})
-
-
-
 // ✅ Use only environment variables (set in .env.local or hosting)
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
