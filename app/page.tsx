@@ -46,14 +46,14 @@ import { GoogleAnalytics } from "@/components/analytics"
 import { VisitorTracker } from "@/components/visitor-tracker"
 import { Toaster } from "@/components/ui/sonner"
 import React from "react"
-import { LoadingScreen } from "@/components/loading-screen" // Import the new component
-// import { CustomCursor } from "@/components/custom-cursor" // DISABLED - Causes cursor lag
-import { ParticleBackground } from "@/components/ParticleBackground" // Import the enhanced ParticleBackground component
-import { ThemeProvider, useTheme } from "@/contexts/ThemeContext" // Import theme context
-import { GameProvider, useGame } from "@/contexts/GameContext" // Import game context
-import { GameUI } from "@/components/game-ui" // Import game UI
-import { TiltableElement } from "@/components/tiltable-element" // Import tiltable element wrapper
-import { CardWarningIcon } from "@/components/card-warning-icon" // Import warning icon
+import { LoadingScreen } from "@/components/loading-screen"
+import { ParticleBackground } from "@/components/ParticleBackground"
+import { ThemeProvider, useTheme } from "@/contexts/ThemeContext"
+import { GameProvider, useGame } from "@/contexts/GameContext"
+import { GameUI } from "@/components/game-ui"
+import { TiltableElement } from "@/components/tiltable-element"
+import { CardWarningIcon } from "@/components/card-warning-icon"
+import StreakZone from "@/components/sections/StreakZone"
 import {
   projects,
   experiences,
@@ -62,10 +62,8 @@ import {
   contactLinks,
   navItems,
   stats,
-} from "@/lib/constants" // Import all constants
-import { Navbar } from "@/components/layout" // Import Navbar component
-
-// Animated Background is now replaced by ParticleBackground component
+} from "@/lib/constants"
+import { Navbar } from "@/components/layout"
 
 // Hero Section with Enhanced Animations
 const HeroSection = () => {
@@ -317,13 +315,11 @@ const ProjectsSection = () => {
               className="group perspective-1000"
             >
               <Card className="bg-slate-900/80 backdrop-blur-lg border-purple-500/30 h-full hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-500 overflow-hidden shadow-xl relative">
-                {/* Animated background gradient */}
                 <motion.div
                   className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
                   initial={false}
                 />
 
-                {/* Shimmer effect */}
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
                   initial={{ x: "-100%" }}
@@ -470,7 +466,6 @@ const ExperienceSection = () => {
         </motion.h2>
 
         <div className="max-w-4xl mx-auto relative">
-          {/* Timeline line */}
           <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary to-secondary"></div>
 
           {experiences.map((exp, index) => (
@@ -608,14 +603,12 @@ const SkillsSection = () => {
   const isInView = useInView(ref, { once: true })
   const { fixElement, isElementFixed, isGroupCompleted, registerElement } = useGame()
 
-  // Generate random rotations for each badge on mount (FORCED rotation -30 to +30 degrees)
   const [badgeRotations] = useState(() => {
     return skillCategories.map(category =>
-      category.skills.map(() => Math.random() * 60 - 30) // -30 to +30 degrees
+      category.skills.map(() => Math.random() * 60 - 30)
     )
   })
 
-  // Register all badges on mount
   useEffect(() => {
     skillCategories.forEach((category, categoryIndex) => {
       category.skills.forEach((skill, badgeIndex) => {
@@ -628,11 +621,10 @@ const SkillsSection = () => {
   const handleBadgeFix = (categoryIndex: number, badgeIndex: number) => {
     const badgeId = `badge-${categoryIndex}-${badgeIndex}`
     if (!isElementFixed(badgeId)) {
-      fixElement(badgeId) // +25 points per badge fixed
+      fixElement(badgeId)
     }
   }
 
-  // Check if all badges in a card are fixed
   const isCardComplete = (categoryIndex: number) => {
     return isGroupCompleted(`card-${categoryIndex}`)
   }
@@ -674,7 +666,6 @@ const SkillsSection = () => {
                 }}
               >
                 <Card className="bg-slate-900/80 backdrop-blur-lg border-purple-500/30 h-full hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl relative overflow-hidden">
-                  {/* Alert Icon - Disappears when all badges are fixed */}
                   <AnimatePresence>
                     {!isCardComplete(categoryIndex) && (
                       <motion.div
@@ -689,7 +680,6 @@ const SkillsSection = () => {
                     )}
                   </AnimatePresence>
 
-                  {/* Animated background */}
                   <motion.div
                     className={`absolute inset-0 bg-gradient-to-br ${category.gradient} opacity-0 hover:opacity-10 transition-opacity duration-500`}
                   />
@@ -727,7 +717,7 @@ const SkillsSection = () => {
                               opacity: 1,
                               scale: 1,
                               y: 0,
-                              rotate: isFixed ? 0 : rotation // Rotate to 0 when fixed
+                              rotate: isFixed ? 0 : rotation
                             } : {}}
                             transition={{
                               duration: 0.4,
@@ -755,7 +745,6 @@ const SkillsSection = () => {
                                 !isFixed ? 'hover:bg-purple-500/20 hover:border-purple-400/60' : 'bg-green-500/10 border-green-400/40'
                               } cursor-pointer transition-all duration-300 text-xs px-3 py-1 relative overflow-hidden`}
                             >
-                              {/* Wipe animation on fix */}
                               {isFixed && (
                                 <motion.div
                                   initial={{ x: '-100%' }}
@@ -809,34 +798,25 @@ const ContactSection = () => {
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true)
 
-    // ============================================================
-    // TODO: EMAIL FUNCTIONALITY - NEEDS SETUP
-    // Start of email code (commented out for now)
-    // ============================================================
+    /*
+     * EMAIL SETUP INSTRUCTIONS:
+     * 1. Go to https://web3forms.com/ and get a free API key
+     * 2. Replace "YOUR_WEB3FORMS_KEY" below with your actual key
+     * 3. Uncomment the try-catch block below
+     * 4. Remove/comment the toast.info block
+     */
 
-    // Temporarily disabled - showing coming soon message
+    // TEMPORARY: Show coming soon message
     toast.info("Email integration coming soon!", {
       description: "Please contact me directly at towhid.sarker3@gmail.com for now.",
     })
     setIsSubmitting(false)
     reset()
+    return
 
-    /*
-    // COMMENTED OUT - To enable email:
-    // 1. Get API key from https://web3forms.com/
-    // 2. Replace YOUR_WEB3FORMS_KEY below
-    // 3. Uncomment this entire block
-    // 4. Remove the toast.info and early return above
-
+    /* UNCOMMENT THIS BLOCK TO ENABLE EMAIL SENDING:
     try {
-      const web3FormsKey = "YOUR_WEB3FORMS_KEY" // REPLACE THIS
-
-      console.log("Sending email with data:", {
-        name: data.name,
-        email: data.email,
-        projectType: data.projectType,
-        messageLength: data.message.length,
-      })
+      const WEB3FORMS_KEY = "YOUR_WEB3FORMS_KEY" // Replace with your key from web3forms.com
 
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
@@ -845,7 +825,7 @@ const ContactSection = () => {
           Accept: "application/json",
         },
         body: JSON.stringify({
-          access_key: web3FormsKey,
+          access_key: WEB3FORMS_KEY,
           name: data.name,
           email: data.email,
           subject: `Portfolio Contact: ${data.projectType}`,
@@ -874,10 +854,6 @@ const ContactSection = () => {
       setIsSubmitting(false)
     }
     */
-
-    // ============================================================
-    // End of email code
-    // ============================================================
   }
 
   return (
@@ -1032,10 +1008,9 @@ const MainContent = () => {
   const { theme } = useTheme()
 
   useEffect(() => {
-    // Simulate loading time or wait for actual content to render
     const timer = setTimeout(() => {
       setIsLoading(false)
-    }, 2000) // Show loading screen for 2 seconds
+    }, 2000)
 
     return () => clearTimeout(timer)
   }, [])
@@ -1045,40 +1020,40 @@ const MainContent = () => {
       <div className="min-h-screen bg-background text-foreground transition-all duration-500">
         <GoogleAnalytics />
         <Toaster />
-        <LoadingScreen isLoading={isLoading} /> {/* Render loading screen */}
-        {/* <CustomCursor /> DISABLED - Causes cursor lag */}
+        <LoadingScreen isLoading={isLoading} />
         <ParticleBackground />
-        <GameUI /> {/* Add game UI */}
+        <GameUI />
         <Navbar />
-      <HeroSection />
-      <AboutSection />
-      <ProjectsSection />
-      <ExperienceSection />
-      <AchievementsSection />
-      <SkillsSection />
-      <ContactSection />
-      {/* Footer */}
-      <footer className="py-8 border-t border-primary/20 relative z-10">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ duration: 0.8 }}
-              className="text-foreground/60 text-center md:text-left"
-            >
-              © 2025 Towhid Sarker. Designed with intention combining creativity, code, and clarity.
-            </motion.p>
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
-              <VisitorTracker />
-            </motion.div>
+        <HeroSection />
+        <AboutSection />
+        <ProjectsSection />
+        <ExperienceSection />
+        <AchievementsSection />
+        <SkillsSection />
+        <StreakZone />
+        <ContactSection />
+        {/* Footer */}
+        <footer className="py-8 border-t border-primary/20 relative z-10">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <motion.p
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.8 }}
+                className="text-foreground/60 text-center md:text-left"
+              >
+                © 2025 Towhid Sarker. Designed with intention combining creativity, code, and clarity.
+              </motion.p>
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              >
+                <VisitorTracker />
+              </motion.div>
+            </div>
           </div>
-        </div>
-      </footer>
+        </footer>
       </div>
     </GameProvider>
   )

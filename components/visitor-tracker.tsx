@@ -5,7 +5,6 @@ import { createClient } from "@supabase/supabase-js"
 import { Card, CardContent } from "@/components/ui/card"
 import { Eye } from "lucide-react"
 
-// ✅ Use only environment variables (set in .env.local or hosting)
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
@@ -21,42 +20,39 @@ function getSupabase() {
 export function VisitorTracker() {
   const [uniqueVisitors, setUniqueVisitors] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [currentIp, setCurrentIp] = useState<string | null>(null)
 
   useEffect(() => {
     const trackVisitor = async () => {
       try {
         const supabaseClient = getSupabase()
         if (!supabaseClient) {
-          // Supabase not configured - skip tracking but don't show error
           setUniqueVisitors(0)
           return
         }
 
         const ipResponse = await fetch("https://api.ipify.org?format=json")
-        if (!ipResponse.ok) throw new Error(`Failed to fetch IP: ${ipResponse.statusText}`)
+        if (!ipResponse.ok) {
+          throw new Error(`Failed to fetch IP: ${ipResponse.statusText}`)
+        }
         const ipData = await ipResponse.json()
         const ipAddress = ipData.ip
-        setCurrentIp(ipAddress)
 
         const { data: existingVisitors, error: selectError } = await supabaseClient
           .from("visitors")
           .select("ip_address")
           .eq("ip_address", ipAddress)
 
-        if (selectError) throw new Error(`Supabase select error: ${selectError.message}`)
+        if (selectError) {
+          throw new Error(`Supabase select error: ${selectError.message}`)
+        }
 
         if (!existingVisitors || existingVisitors.length === 0) {
           const { error: insertError } = await supabaseClient
             .from("visitors")
             .insert({ ip_address: ipAddress })
 
-          if (insertError) {
-            if (insertError.code === "23505") {
-              console.warn("IP already exists (concurrent insert)")
-            } else {
-              throw new Error(`Supabase insert error: ${insertError.message}`)
-            }
+          if (insertError && insertError.code !== "23505") {
+            throw new Error(`Supabase insert error: ${insertError.message}`)
           }
         }
 
@@ -64,7 +60,9 @@ export function VisitorTracker() {
           .from("visitors")
           .select("ip_address", { count: "exact", head: true })
 
-        if (countError) throw new Error(`Supabase count error: ${countError.message}`)
+        if (countError) {
+          throw new Error(`Supabase count error: ${countError.message}`)
+        }
 
         setUniqueVisitors(count ?? 0)
       } catch (err) {
