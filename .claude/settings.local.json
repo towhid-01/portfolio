@@ -21,7 +21,11 @@
       "Bash(findstr:*)",
       "Bash(powershell:*)",
       "Bash(tasklist:*)",
-      "Bash(dir /s /b components*.tsx)"
+      "Bash(dir /s /b components*.tsx)",
+      "Bash(vercel --version)",
+      "Bash(gh api:*)",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:towhidsarker.com)"
     ],
     "deny": [],
     "ask": []

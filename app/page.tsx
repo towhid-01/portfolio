@@ -258,13 +258,13 @@ const AboutSection = () => {
                     animate={isInView ? { opacity: 1, y: 0 } : {}}
                     transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
                     whileHover={{ scale: 1.05 }}
-                    className="bg-[#1e293b] backdrop-blur-lg border border-purple-500/30 p-8 rounded-2xl text-center hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl"
+                    className="bg-white dark:bg-[#1e293b] backdrop-blur-lg border border-purple-500/30 p-8 rounded-2xl text-center hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl"
                   >
                     <div className="text-primary mb-4">
                       <stat.icon className="w-6 h-6" />
                     </div>
-                    <div className="text-3xl font-bold text-white mb-2">{stat.value}</div>
-                    <div className="text-gray-300">{stat.label}</div>
+                    <div className="text-3xl font-bold text-slate-800 dark:text-white mb-2">{stat.value}</div>
+                    <div className="text-slate-600 dark:text-gray-300">{stat.label}</div>
                   </motion.div>
                 ))}
               </div>
@@ -314,7 +314,7 @@ const ProjectsSection = () => {
               }}
               className="group perspective-1000"
             >
-              <Card className="bg-[#1e293b] backdrop-blur-lg border-purple-500/30 h-full hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-500 overflow-hidden shadow-xl relative">
+              <Card className="bg-white dark:bg-[#1e293b] backdrop-blur-lg border-purple-500/30 h-full hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-500 overflow-hidden shadow-xl relative">
                 <motion.div
                   className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
                   initial={false}
@@ -341,7 +341,7 @@ const ProjectsSection = () => {
                         <project.icon className="w-5 h-5" />
                       </motion.div>
                       <div>
-                        <CardTitle className="text-lg text-white group-hover:text-primary transition-colors duration-300">
+                        <CardTitle className="text-lg text-slate-800 dark:text-white group-hover:text-primary transition-colors duration-300">
                           {project.title}
                         </CardTitle>
                         <div className="flex items-center gap-2 mt-1">
@@ -371,7 +371,7 @@ const ProjectsSection = () => {
                       </div>
                     </div>
                   </div>
-                  <CardDescription className="text-gray-300 text-sm leading-relaxed group-hover:text-gray-100 transition-colors duration-300">
+                  <CardDescription className="text-slate-600 dark:text-gray-300 text-sm leading-relaxed group-hover:text-gray-100 transition-colors duration-300">
                     {project.description}
                   </CardDescription>
                 </CardHeader>
@@ -383,7 +383,7 @@ const ProjectsSection = () => {
                       {project.features.map((feature, i) => (
                         <motion.li
                           key={i}
-                          className="text-xs text-gray-300 flex items-start gap-2 group-hover:text-gray-100 transition-colors duration-300"
+                          className="text-xs text-slate-600 dark:text-gray-300 flex items-start gap-2 group-hover:text-gray-100 transition-colors duration-300"
                           initial={{ opacity: 0, x: -10 }}
                           animate={isInView ? { opacity: 1, x: 0 } : {}}
                           transition={{ delay: index * 0.1 + i * 0.05 }}
@@ -485,11 +485,11 @@ const ExperienceSection = () => {
                 <div className="flex-1 h-px bg-gradient-to-r from-primary to-transparent"></div>
               </div>
 
-              <Card className="bg-[#1e293b] backdrop-blur-lg ml-12 border-purple-500/30 hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl">
+              <Card className="bg-white dark:bg-[#1e293b] backdrop-blur-lg ml-12 border-purple-500/30 hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl">
                 <CardHeader>
                   <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                     <div>
-                      <CardTitle className="text-xl text-white mb-2">{exp.position}</CardTitle>
+                      <CardTitle className="text-xl text-slate-800 dark:text-white mb-2">{exp.position}</CardTitle>
                       <div className="flex items-center gap-2 mb-2">
                         <p className="text-primary font-semibold">{exp.company}</p>
                         <Badge variant="outline" className="text-xs border-orange-500/40 text-orange-400 hover:bg-orange-500/20">
@@ -498,11 +498,11 @@ const ExperienceSection = () => {
                       </div>
                     </div>
                     <div className="text-left lg:text-right">
-                      <div className="flex items-center text-gray-300 text-sm mb-1">
+                      <div className="flex items-center text-slate-600 dark:text-gray-300 text-sm mb-1">
                         <Calendar className="w-4 h-4 mr-1" />
                         {exp.duration}
                       </div>
-                      <div className="flex items-center text-gray-300 text-sm">
+                      <div className="flex items-center text-slate-600 dark:text-gray-300 text-sm">
                         <MapPin className="w-4 h-4 mr-1" />
                         {exp.location}
                       </div>
@@ -513,7 +513,7 @@ const ExperienceSection = () => {
                 <CardContent>
                   <ul className="space-y-3">
                     {exp.responsibilities.map((resp, i) => (
-                      <li key={i} className="text-gray-300 flex items-start gap-3 text-sm leading-relaxed">
+                      <li key={i} className="text-slate-600 dark:text-gray-300 flex items-start gap-3 text-sm leading-relaxed">
                         <ArrowRight className="w-4 h-4 text-secondary mt-0.5 flex-shrink-0" />
                         {resp}
                       </li>
@@ -555,13 +555,13 @@ const AchievementsSection = () => {
               transition={{ duration: 0.8, delay: index * 0.2 }}
               whileHover={{ y: -8, scale: 1.02 }}
             >
-              <Card className="bg-[#1e293b] backdrop-blur-lg h-full border-purple-500/30 hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl">
+              <Card className="bg-white dark:bg-[#1e293b] backdrop-blur-lg h-full border-purple-500/30 hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl">
                 <CardHeader>
                   <div className="flex items-center gap-3 mb-4">
                     <div className={`p-3 bg-gradient-to-br ${category.gradient} bg-opacity-20 rounded-lg text-primary`}>
                       <category.icon className="w-5 h-5" />
                     </div>
-                    <CardTitle className="text-lg text-white">{category.title}</CardTitle>
+                    <CardTitle className="text-lg text-slate-800 dark:text-white">{category.title}</CardTitle>
                   </div>
                 </CardHeader>
 
@@ -573,17 +573,17 @@ const AchievementsSection = () => {
                         initial={{ opacity: 0, x: -20 }}
                         animate={isInView ? { opacity: 1, x: 0 } : {}}
                         transition={{ duration: 0.5, delay: index * 0.2 + i * 0.1 }}
-                        className="bg-slate-700/50 p-3 rounded-lg border border-purple-500/20 hover:border-purple-500/40 transition-colors"
+                        className="bg-slate-100 dark:bg-slate-700/50 p-3 rounded-lg border border-purple-500/20 hover:border-purple-500/40 transition-colors"
                       >
                         <div className="flex items-center justify-between mb-1">
-                          <h4 className="text-sm font-semibold text-white leading-tight">{item.name}</h4>
+                          <h4 className="text-sm font-semibold text-slate-800 dark:text-white leading-tight">{item.name}</h4>
                           <Badge
                             className={`bg-gradient-to-r ${category.gradient} text-white text-xs flex-shrink-0 ml-2`}
                           >
                             {item.rank}
                           </Badge>
                         </div>
-                        <p className="text-xs text-gray-300">{item.team}</p>
+                        <p className="text-xs text-slate-600 dark:text-gray-300">{item.team}</p>
                       </motion.div>
                     ))}
                   </div>
@@ -665,7 +665,7 @@ const SkillsSection = () => {
                   transform: "translateZ(0)",
                 }}
               >
-                <Card className="bg-[#1e293b] backdrop-blur-lg border-purple-500/30 h-full hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl relative overflow-hidden">
+                <Card className="bg-white dark:bg-[#1e293b] backdrop-blur-lg border-purple-500/30 h-full hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl relative overflow-hidden">
                   <AnimatePresence>
                     {!isCardComplete(categoryIndex) && (
                       <motion.div
@@ -696,7 +696,7 @@ const SkillsSection = () => {
                       >
                         <category.icon className="w-6 h-6" />
                       </motion.div>
-                      <CardTitle className="text-lg text-white group-hover:text-primary transition-colors duration-300">
+                      <CardTitle className="text-lg text-slate-800 dark:text-white group-hover:text-primary transition-colors duration-300">
                         {category.title}
                       </CardTitle>
                     </div>
@@ -876,8 +876,8 @@ const ContactSection = () => {
             className="space-y-8"
           >
             <div>
-              <h3 className="text-2xl font-bold text-white mb-6">Ready to Build Something Amazing?</h3>
-              <p className="text-gray-300 text-lg leading-relaxed">
+              <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-6">Ready to Build Something Amazing?</h3>
+              <p className="text-slate-600 dark:text-gray-300 text-lg leading-relaxed">
                 I'm always excited to collaborate on innovative game projects, discuss Unity development opportunities,
                 or explore creative solutions for interactive experiences. Let's turn your ideas into engaging gameplay!
               </p>
@@ -894,7 +894,7 @@ const ContactSection = () => {
                   animate={isInView ? { opacity: 1, x: 0 } : {}}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   whileHover={{ x: 10, scale: 1.02 }}
-                  className="flex items-center gap-4 p-4 bg-[#1e293b] backdrop-blur-lg border border-purple-500/30 rounded-lg hover:border-purple-500/60 hover:shadow-[0_0_20px_rgba(147,51,234,0.3)] transition-all duration-300 group shadow-lg"
+                  className="flex items-center gap-4 p-4 bg-white dark:bg-[#1e293b] backdrop-blur-lg border border-purple-500/30 rounded-lg hover:border-purple-500/60 hover:shadow-[0_0_20px_rgba(147,51,234,0.3)] transition-all duration-300 group shadow-lg"
                 >
                   <div className={`p-3 bg-gradient-to-br ${link.gradient} bg-opacity-20 rounded-lg`}>
                     <div className="text-primary group-hover:scale-110 transition-transform">
@@ -902,8 +902,8 @@ const ContactSection = () => {
                     </div>
                   </div>
                   <div>
-                    <p className="text-white font-medium">{link.name}</p>
-                    <p className="text-gray-300 text-sm">{link.value}</p>
+                    <p className="text-slate-800 dark:text-white font-medium">{link.name}</p>
+                    <p className="text-slate-600 dark:text-gray-300 text-sm">{link.value}</p>
                   </div>
                 </motion.a>
               ))}
@@ -915,13 +915,13 @@ const ContactSection = () => {
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8 }}
           >
-            <Card className="bg-[#1e293b] backdrop-blur-lg border-purple-500/30 hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl">
+            <Card className="bg-white dark:bg-[#1e293b] backdrop-blur-lg border-purple-500/30 hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl">
               <CardHeader>
-                <CardTitle className="text-xl text-white flex items-center gap-2">
+                <CardTitle className="text-xl text-slate-800 dark:text-white flex items-center gap-2">
                   <MessageCircle className="w-5 h-5 text-primary" />
                   Start a Conversation
                 </CardTitle>
-                <CardDescription className="text-gray-300">
+                <CardDescription className="text-slate-600 dark:text-gray-300">
                   Let's discuss your next game project or collaboration opportunity!
                 </CardDescription>
               </CardHeader>
@@ -933,7 +933,7 @@ const ContactSection = () => {
                       <Input
                         {...register("name")}
                         placeholder="Your Name"
-                        className="bg-slate-800 border-purple-500/30 text-white placeholder:text-gray-500 focus:border-purple-500 transition-colors"
+                        className="bg-white dark:bg-slate-800 border-purple-500/30 text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:border-purple-500 transition-colors"
                         disabled={isSubmitting}
                       />
                       {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
@@ -943,7 +943,7 @@ const ContactSection = () => {
                         {...register("email")}
                         placeholder="Your Email"
                         type="email"
-                        className="bg-slate-800 border-purple-500/30 text-white placeholder:text-gray-500 focus:border-purple-500 transition-colors"
+                        className="bg-white dark:bg-slate-800 border-purple-500/30 text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:border-purple-500 transition-colors"
                         disabled={isSubmitting}
                       />
                       {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
@@ -954,7 +954,7 @@ const ContactSection = () => {
                     <Input
                       {...register("projectType")}
                       placeholder="Project Type (Game Dev, Collaboration, etc.)"
-                      className="bg-slate-800 border-purple-500/30 text-white placeholder:text-gray-500 focus:border-purple-500 transition-colors"
+                      className="bg-white dark:bg-slate-800 border-purple-500/30 text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:border-purple-500 transition-colors"
                       disabled={isSubmitting}
                     />
                     {errors.projectType && <p className="text-red-500 text-xs mt-1">{errors.projectType.message}</p>}
@@ -965,7 +965,7 @@ const ContactSection = () => {
                       {...register("message")}
                       placeholder="Tell me about your project or idea..."
                       rows={5}
-                      className="bg-slate-800 border-purple-500/30 text-white placeholder:text-gray-500 focus:border-purple-500 resize-none transition-colors"
+                      className="bg-white dark:bg-slate-800 border-purple-500/30 text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:border-purple-500 resize-none transition-colors"
                       disabled={isSubmitting}
                     />
                     {errors.message && <p className="text-red-500 text-xs mt-1">{errors.message.message}</p>}

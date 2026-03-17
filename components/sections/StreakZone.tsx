@@ -64,7 +64,7 @@ function AnimatedNumber({ value, duration = 1500 }: { value: number; duration?: 
 function StreakCard({ data, index }: { data: StreakData; index: number }) {
   if (data.isLoading) {
     return (
-      <Card className="bg-[#1e293b] backdrop-blur-lg border-purple-500/30 h-full animate-pulse">
+      <Card className="bg-white dark:bg-[#1e293b] backdrop-blur-lg border-purple-500/30 h-full animate-pulse">
         <CardContent className="p-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-lg bg-purple-500/20" />
@@ -89,13 +89,13 @@ function StreakCard({ data, index }: { data: StreakData; index: number }) {
       whileHover={{ scale: 1.03, y: -5 }}
       className="block"
     >
-      <Card className="bg-[#1e293b] backdrop-blur-lg border-purple-500/30 hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.3)] transition-all duration-300 h-full cursor-pointer group">
+      <Card className="bg-white dark:bg-[#1e293b] backdrop-blur-lg border-purple-500/30 hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.3)] transition-all duration-300 h-full cursor-pointer group">
         <CardContent className="p-6">
           <div className="flex items-center gap-3 mb-4">
             <span className="text-3xl group-hover:scale-110 transition-transform duration-300">
               {data.icon}
             </span>
-            <span className="text-white font-semibold text-lg">
+            <span className="text-slate-800 dark:text-white font-semibold text-lg">
               {data.platform}
             </span>
             <svg
@@ -121,8 +121,8 @@ function StreakCard({ data, index }: { data: StreakData; index: number }) {
             <span className="text-2xl">🔥</span>
           </div>
 
-          <p className="text-gray-300 text-sm font-medium">{data.label}</p>
-          <p className="text-gray-400 text-xs mt-1">{data.subtitle}</p>
+          <p className="text-slate-600 dark:text-gray-300 text-sm font-medium">{data.label}</p>
+          <p className="text-slate-500 dark:text-gray-400 text-xs mt-1">{data.subtitle}</p>
         </CardContent>
       </Card>
     </motion.a>
