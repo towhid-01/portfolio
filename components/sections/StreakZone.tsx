@@ -64,7 +64,7 @@ function AnimatedNumber({ value, duration = 1500 }: { value: number; duration?: 
 function StreakCard({ data, index }: { data: StreakData; index: number }) {
   if (data.isLoading) {
     return (
-      <Card className="bg-slate-900/80 backdrop-blur-lg border-purple-500/30 h-full animate-pulse">
+      <Card className="bg-[#1e293b] backdrop-blur-lg border-purple-500/30 h-full animate-pulse">
         <CardContent className="p-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-lg bg-purple-500/20" />
@@ -89,13 +89,13 @@ function StreakCard({ data, index }: { data: StreakData; index: number }) {
       whileHover={{ scale: 1.03, y: -5 }}
       className="block"
     >
-      <Card className="bg-slate-900/80 backdrop-blur-lg border-purple-500/30 hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.3)] transition-all duration-300 h-full cursor-pointer group">
+      <Card className="bg-[#1e293b] backdrop-blur-lg border-purple-500/30 hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.3)] transition-all duration-300 h-full cursor-pointer group">
         <CardContent className="p-6">
           <div className="flex items-center gap-3 mb-4">
             <span className="text-3xl group-hover:scale-110 transition-transform duration-300">
               {data.icon}
             </span>
-            <span className="text-foreground font-semibold text-lg">
+            <span className="text-white font-semibold text-lg">
               {data.platform}
             </span>
             <svg
@@ -121,8 +121,8 @@ function StreakCard({ data, index }: { data: StreakData; index: number }) {
             <span className="text-2xl">🔥</span>
           </div>
 
-          <p className="text-foreground/70 text-sm font-medium">{data.label}</p>
-          <p className="text-foreground/40 text-xs mt-1">{data.subtitle}</p>
+          <p className="text-gray-300 text-sm font-medium">{data.label}</p>
+          <p className="text-gray-400 text-xs mt-1">{data.subtitle}</p>
         </CardContent>
       </Card>
     </motion.a>
@@ -240,85 +240,50 @@ export default function StreakZone() {
 
   useEffect(() => {
     const fetchAll = async () => {
-      // Fetch Duolingo
-      try {
-        const duo = await fetchDuolingo();
-        setStreaks(prev => prev.map(s => 
-          s.platform === 'Duolingo' 
-            ? { ...s, streak: duo.streak, subtitle: `${duo.xp.toLocaleString()} XP • ${duo.language}`, isLoading: false }
-            : s
-        ));
-      } catch {
-        setStreaks(prev => prev.map(s => 
-          s.platform === 'Duolingo' 
-            ? { ...s, streak: 0, subtitle: 'Could not load', isLoading: false, error: true }
-            : s
-        ));
-      }
+      // Duolingo - Calculate streak based on formula
+      const duolingoStreak = 1155 + Math.floor((Date.now() - new Date('2025-01-16').getTime()) / 86400000);
+      setStreaks(prev => prev.map(s =>
+        s.platform === 'Duolingo'
+          ? { ...s, streak: duolingoStreak, subtitle: `Learning Japanese`, isLoading: false }
+          : s
+      ));
 
-      // Fetch GitHub
-      try {
-        const gh = await fetchGitHub();
-        setStreaks(prev => prev.map(s => 
-          s.platform === 'GitHub' 
-            ? { ...s, streak: gh.activeDays, subtitle: `${gh.events} recent events`, isLoading: false }
-            : s
-        ));
-      } catch {
-        setStreaks(prev => prev.map(s => 
-          s.platform === 'GitHub' 
-            ? { ...s, streak: 0, subtitle: 'Could not load', isLoading: false, error: true }
-            : s
-        ));
-      }
+      // GitHub - Hardcoded
+      setStreaks(prev => prev.map(s =>
+        s.platform === 'GitHub'
+          ? { ...s, streak: 30, subtitle: `Active Days`, isLoading: false }
+          : s
+      ));
 
-      // Fetch LeetCode
-      try {
-        const lc = await fetchLeetCode();
-        setStreaks(prev => prev.map(s => 
-          s.platform === 'LeetCode' 
-            ? { ...s, streak: lc.solved || lc.streak, label: lc.streak > 0 ? 'Day Streak' : 'Problems Solved', subtitle: `${lc.solved} total solved`, isLoading: false }
-            : s
-        ));
-      } catch {
-        setStreaks(prev => prev.map(s => 
-          s.platform === 'LeetCode' 
-            ? { ...s, streak: 0, subtitle: 'Could not load', isLoading: false, error: true }
-            : s
-        ));
-      }
+      // LeetCode - Hardcoded
+      setStreaks(prev => prev.map(s =>
+        s.platform === 'LeetCode'
+          ? { ...s, streak: 150, subtitle: `Problems Solved`, isLoading: false }
+          : s
+      ));
 
-      // Fetch CodeWars
+      // CodeWars - Keep API
       try {
         const cw = await fetchCodeWars();
-        setStreaks(prev => prev.map(s => 
-          s.platform === 'CodeWars' 
+        setStreaks(prev => prev.map(s =>
+          s.platform === 'CodeWars'
             ? { ...s, streak: cw.honor, subtitle: `${cw.rank} • ${cw.kata} kata`, isLoading: false }
             : s
         ));
       } catch {
-        setStreaks(prev => prev.map(s => 
-          s.platform === 'CodeWars' 
-            ? { ...s, streak: 0, subtitle: 'Could not load', isLoading: false, error: true }
+        setStreaks(prev => prev.map(s =>
+          s.platform === 'CodeWars'
+            ? { ...s, streak: 376, subtitle: '5 kyu • Kata completed', isLoading: false, error: true }
             : s
         ));
       }
 
-      // Fetch WakaTime
-      try {
-        const wt = await fetchWakaTime();
-        setStreaks(prev => prev.map(s => 
-          s.platform === 'WakaTime' 
-            ? { ...s, streak: wt.hours, subtitle: `${wt.daily}/day • ${wt.language}`, isLoading: false }
-            : s
-        ));
-      } catch {
-        setStreaks(prev => prev.map(s => 
-          s.platform === 'WakaTime' 
-            ? { ...s, streak: 0, subtitle: 'Could not load', isLoading: false, error: true }
-            : s
-        ));
-      }
+      // WakaTime - Hardcoded
+      setStreaks(prev => prev.map(s =>
+        s.platform === 'WakaTime'
+          ? { ...s, streak: 25, subtitle: `Hours this week`, isLoading: false }
+          : s
+      ));
     };
 
     fetchAll();

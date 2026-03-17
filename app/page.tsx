@@ -258,13 +258,13 @@ const AboutSection = () => {
                     animate={isInView ? { opacity: 1, y: 0 } : {}}
                     transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
                     whileHover={{ scale: 1.05 }}
-                    className="bg-slate-900/80 backdrop-blur-lg border border-purple-500/30 p-8 rounded-2xl text-center hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl"
+                    className="bg-[#1e293b] backdrop-blur-lg border border-purple-500/30 p-8 rounded-2xl text-center hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl"
                   >
                     <div className="text-primary mb-4">
                       <stat.icon className="w-6 h-6" />
                     </div>
                     <div className="text-3xl font-bold text-foreground mb-2">{stat.value}</div>
-                    <div className="text-foreground/60">{stat.label}</div>
+                    <div className="text-foreground/70">{stat.label}</div>
                   </motion.div>
                 ))}
               </div>
@@ -314,7 +314,7 @@ const ProjectsSection = () => {
               }}
               className="group perspective-1000"
             >
-              <Card className="bg-slate-900/80 backdrop-blur-lg border-purple-500/30 h-full hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-500 overflow-hidden shadow-xl relative">
+              <Card className="bg-[#1e293b] backdrop-blur-lg border-purple-500/30 h-full hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-500 overflow-hidden shadow-xl relative">
                 <motion.div
                   className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
                   initial={false}
@@ -383,7 +383,7 @@ const ProjectsSection = () => {
                       {project.features.map((feature, i) => (
                         <motion.li
                           key={i}
-                          className="text-xs text-foreground/60 flex items-start gap-2 group-hover:text-foreground/80 transition-colors duration-300"
+                          className="text-xs text-foreground/70 flex items-start gap-2 group-hover:text-foreground/90 transition-colors duration-300"
                           initial={{ opacity: 0, x: -10 }}
                           animate={isInView ? { opacity: 1, x: 0 } : {}}
                           transition={{ delay: index * 0.1 + i * 0.05 }}
@@ -485,7 +485,7 @@ const ExperienceSection = () => {
                 <div className="flex-1 h-px bg-gradient-to-r from-primary to-transparent"></div>
               </div>
 
-              <Card className="bg-slate-900/80 backdrop-blur-lg ml-12 border-purple-500/30 hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl">
+              <Card className="bg-[#1e293b] backdrop-blur-lg ml-12 border-purple-500/30 hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl">
                 <CardHeader>
                   <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                     <div>
@@ -498,11 +498,11 @@ const ExperienceSection = () => {
                       </div>
                     </div>
                     <div className="text-left lg:text-right">
-                      <div className="flex items-center text-foreground/60 text-sm mb-1">
+                      <div className="flex items-center text-foreground/70 text-sm mb-1">
                         <Calendar className="w-4 h-4 mr-1" />
                         {exp.duration}
                       </div>
-                      <div className="flex items-center text-foreground/60 text-sm">
+                      <div className="flex items-center text-foreground/70 text-sm">
                         <MapPin className="w-4 h-4 mr-1" />
                         {exp.location}
                       </div>
@@ -555,7 +555,7 @@ const AchievementsSection = () => {
               transition={{ duration: 0.8, delay: index * 0.2 }}
               whileHover={{ y: -8, scale: 1.02 }}
             >
-              <Card className="bg-slate-900/80 backdrop-blur-lg h-full border-purple-500/30 hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl">
+              <Card className="bg-[#1e293b] backdrop-blur-lg h-full border-purple-500/30 hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl">
                 <CardHeader>
                   <div className="flex items-center gap-3 mb-4">
                     <div className={`p-3 bg-gradient-to-br ${category.gradient} bg-opacity-20 rounded-lg text-primary`}>
@@ -583,7 +583,7 @@ const AchievementsSection = () => {
                             {item.rank}
                           </Badge>
                         </div>
-                        <p className="text-xs text-foreground/60">{item.team}</p>
+                        <p className="text-xs text-foreground/70">{item.team}</p>
                       </motion.div>
                     ))}
                   </div>
@@ -665,7 +665,7 @@ const SkillsSection = () => {
                   transform: "translateZ(0)",
                 }}
               >
-                <Card className="bg-slate-900/80 backdrop-blur-lg border-purple-500/30 h-full hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl relative overflow-hidden">
+                <Card className="bg-[#1e293b] backdrop-blur-lg border-purple-500/30 h-full hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl relative overflow-hidden">
                   <AnimatePresence>
                     {!isCardComplete(categoryIndex) && (
                       <motion.div
@@ -894,7 +894,7 @@ const ContactSection = () => {
                   animate={isInView ? { opacity: 1, x: 0 } : {}}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   whileHover={{ x: 10, scale: 1.02 }}
-                  className="flex items-center gap-4 p-4 bg-slate-900/80 backdrop-blur-lg border border-purple-500/30 rounded-lg hover:border-purple-500/60 hover:shadow-[0_0_20px_rgba(147,51,234,0.3)] transition-all duration-300 group shadow-lg"
+                  className="flex items-center gap-4 p-4 bg-[#1e293b] backdrop-blur-lg border border-purple-500/30 rounded-lg hover:border-purple-500/60 hover:shadow-[0_0_20px_rgba(147,51,234,0.3)] transition-all duration-300 group shadow-lg"
                 >
                   <div className={`p-3 bg-gradient-to-br ${link.gradient} bg-opacity-20 rounded-lg`}>
                     <div className="text-primary group-hover:scale-110 transition-transform">
@@ -903,7 +903,7 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <p className="text-foreground font-medium">{link.name}</p>
-                    <p className="text-foreground/60 text-sm">{link.value}</p>
+                    <p className="text-foreground/70 text-sm">{link.value}</p>
                   </div>
                 </motion.a>
               ))}
@@ -915,13 +915,13 @@ const ContactSection = () => {
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8 }}
           >
-            <Card className="bg-slate-900/80 backdrop-blur-lg border-purple-500/30 hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl">
+            <Card className="bg-[#1e293b] backdrop-blur-lg border-purple-500/30 hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.4)] transition-all duration-300 shadow-xl">
               <CardHeader>
                 <CardTitle className="text-xl text-foreground flex items-center gap-2">
                   <MessageCircle className="w-5 h-5 text-primary" />
                   Start a Conversation
                 </CardTitle>
-                <CardDescription className="text-foreground/60">
+                <CardDescription className="text-foreground/70">
                   Let's discuss your next game project or collaboration opportunity!
                 </CardDescription>
               </CardHeader>
