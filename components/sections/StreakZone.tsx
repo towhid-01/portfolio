@@ -115,7 +115,7 @@ function StreakCard({ data, index }: { data: StreakData; index: number }) {
           </div>
 
           <div className="flex items-baseline gap-2 mb-2">
-            <span className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="inline-block text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent pb-1">
               <AnimatedNumber value={data.streak} />
             </span>
             <span className="text-2xl">🔥</span>
@@ -299,7 +299,7 @@ export default function StreakZone() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h2 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent pb-2">
             Streak Zone <span className="text-3xl">🔥</span>
           </h2>
           <p className="text-foreground/60 text-lg max-w-2xl mx-auto">

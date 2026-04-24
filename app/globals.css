@@ -106,12 +106,6 @@
   perspective: 1000px;
 }
 
-/* Optimize motion.div elements */
-[data-framer-component-type] {
-  will-change: transform, opacity;
-  transform: translateZ(0);
-}
-
 /* Smooth scrolling with GPU acceleration */
 html {
   scroll-behavior: smooth;
@@ -119,9 +113,8 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Optimize images and media */
-img, video, canvas {
-  will-change: transform;
+/* Optimize canvas rendering */
+canvas {
   transform: translateZ(0);
 }
 
@@ -658,6 +651,5 @@ html {
     background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
     border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
     color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }

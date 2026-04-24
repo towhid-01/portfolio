@@ -47,9 +47,8 @@ export const Navbar = () => {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.8 }}
-      className="fixed top-0 left-0 right-0 z-50 bg-slate-900/70 backdrop-blur-lg border-b border-purple-500/30 shadow-xl"
+      className="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-b border-purple-500/30 shadow-xl"
       style={{
-        willChange: "transform",
         transform: "translateZ(0)",
       }}
     >

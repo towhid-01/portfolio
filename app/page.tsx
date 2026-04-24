@@ -72,7 +72,7 @@ const HeroSection = () => {
           </motion.div>
 
           <motion.h1
-            className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent mb-6"
+            className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent mb-6 pb-2"
             initial={{ scale: 0.5 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.6, delay: 0.6 }}
@@ -158,7 +158,7 @@ const AboutSection = () => {
           transition={{ duration: 0.5 }}
           className="max-w-6xl mx-auto"
         >
-          <h2 className="text-4xl md:text-6xl font-bold text-center mb-16 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-6xl font-bold text-center mb-16 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent pb-2">
             About Me
           </h2>
 
