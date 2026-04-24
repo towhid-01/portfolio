@@ -146,8 +146,7 @@ export function ParticleBackground() {
       }
     }
 
-    // PERFORMANCE: Reduced particle count from 20/30 to 10/15 for buttery smooth performance
-    const particleCount = window.innerWidth < 768 ? 10 : 15;
+    const particleCount = window.innerWidth < 768 ? 15 : 30;
     const particles: Particle[] = Array.from({ length: particleCount }, () => new Particle());
 
     // PERFORMANCE: Static gradient (created once, not recreated every frame)

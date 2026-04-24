@@ -25,7 +25,8 @@
       "Bash(vercel --version)",
       "Bash(gh api:*)",
       "WebFetch(domain:api.github.com)",
-      "WebFetch(domain:towhidsarker.com)"
+      "WebFetch(domain:towhidsarker.com)",
+      "Bash(npx next:*)"
     ],
     "deny": [],
     "ask": []
