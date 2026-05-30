@@ -144,6 +144,19 @@ const HeroSection = () => {
   )
 }
 
+// Duolingo streak badge – updates daily from May 30 2026 base
+const DuolingoBadge = () => {
+  const base = 1227
+  const baseDate = new Date('2026-05-30T00:00:00Z').getTime()
+  const daysSince = Math.floor((Date.now() - baseDate) / 86400000)
+  const streak = base + Math.max(0, daysSince)
+  return (
+    <Badge className="bg-green-500/20 text-green-400 border-green-500/40 px-3 py-1 hover:bg-green-500/30 transition-colors">
+      🦉 {streak}+ day Duolingo streak
+    </Badge>
+  )
+}
+
 // About Section
 const AboutSection = () => {
   const ref = useRef(null)
@@ -171,9 +184,9 @@ const AboutSection = () => {
             >
               <p className="text-lg text-foreground/80 leading-relaxed text-justify">
                 I'm a passionate Unity Game Developer specializing in puzzle games, educational experiences,
-                and smooth UI animations. Currently working remotely at Visiontillion, a Saudi Arabia based gaming company,
-                where I focus on creating engaging game UI/UX designs and developing detailed game documentation to
-                support production and design workflows.
+                and smooth UI animations. Currently working remotely at SM Technology as a Game Developer,
+                where I focus on building complete mobile games from scratch, developing game mechanics, UI systems,
+                and collaborating with designers to deliver production-ready games.
               </p>
 
               <p className="text-lg text-foreground/80 leading-relaxed text-justify">
@@ -199,6 +212,7 @@ const AboutSection = () => {
                   <Sparkles className="w-3 h-3 mr-1" />
                   UI Animation
                 </Badge>
+                <DuolingoBadge />
               </div>
             </motion.div>
 

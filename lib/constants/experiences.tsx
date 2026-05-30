@@ -3,9 +3,23 @@ import type { Experience } from "@/types"
 
 export const experiences: Experience[] = [
   {
+    company: "SM Technology",
+    position: "Game Developer (Probationary)",
+    duration: "May 2026 – Present",
+    location: "Remote",
+    type: "Full-time",
+    responsibilities: [
+      "Developing complete mobile games from scratch as well as polishing existing projects",
+      "Building game mechanics, UI systems, and implementing design team's Figma assets",
+      "Collaborating with designers to deliver production-ready games",
+    ],
+    icon: Gamepad2,
+    gradient: "from-orange-500 to-purple-500",
+  },
+  {
     company: "VisionTillion",
     position: "Unity Game Developer",
-    duration: "September 2025 – Present",
+    duration: "September 2025 – April 2026",
     location: "Remote",
     type: "Full-time",
     responsibilities: [

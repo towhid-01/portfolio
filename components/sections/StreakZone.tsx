@@ -5,15 +5,16 @@ import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 
-interface StreakData {
-  platform: string;
+interface StatCardData {
+  id: string;
   icon: string;
-  streak: number;
+  platform: string;
+  value: number;
+  suffix: string;
   label: string;
   subtitle: string;
   profileUrl: string;
   isLoading?: boolean;
-  error?: boolean;
 }
 
 // Animated counter component
@@ -27,11 +28,11 @@ function AnimatedNumber({ value, duration = 1500 }: { value: number; duration?: 
       ([entry]) => {
         if (entry.isIntersecting && !hasAnimated) {
           setHasAnimated(true);
-          
+
           const steps = 60;
           const increment = value / steps;
           let current = 0;
-          
+
           const timer = setInterval(() => {
             current += increment;
             if (current >= value) {
@@ -60,11 +61,10 @@ function AnimatedNumber({ value, duration = 1500 }: { value: number; duration?: 
   );
 }
 
-// Individual streak card
-function StreakCard({ data, index }: { data: StreakData; index: number }) {
+function StatCard({ data, index }: { data: StatCardData; index: number }) {
   if (data.isLoading) {
     return (
-      <Card className="bg-white dark:bg-[#1e293b] backdrop-blur-lg border-purple-500/30 h-full animate-pulse">
+      <Card className="bg-white dark:bg-slate-800 backdrop-blur-lg border-purple-500/30 h-full animate-pulse">
         <CardContent className="p-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-lg bg-purple-500/20" />
@@ -89,7 +89,7 @@ function StreakCard({ data, index }: { data: StreakData; index: number }) {
       whileHover={{ scale: 1.03, y: -5 }}
       className="block"
     >
-      <Card className="bg-white dark:bg-[#1e293b] backdrop-blur-lg border-purple-500/30 hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.3)] transition-all duration-300 h-full cursor-pointer group">
+      <Card className="bg-white dark:bg-slate-800 backdrop-blur-lg border-purple-500/30 hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(147,51,234,0.3)] transition-all duration-300 h-full cursor-pointer group">
         <CardContent className="p-6">
           <div className="flex items-center gap-3 mb-4">
             <span className="text-3xl group-hover:scale-110 transition-transform duration-300">
@@ -114,11 +114,13 @@ function StreakCard({ data, index }: { data: StreakData; index: number }) {
             </svg>
           </div>
 
-          <div className="flex items-baseline gap-2 mb-2">
+          <div className="flex items-baseline gap-1 mb-2">
             <span className="inline-block text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent pb-1">
-              <AnimatedNumber value={data.streak} />
+              <AnimatedNumber value={data.value} />
             </span>
-            <span className="text-2xl">🔥</span>
+            <span className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+              {data.suffix}
+            </span>
           </div>
 
           <p className="text-slate-600 dark:text-gray-300 text-sm font-medium">{data.label}</p>
@@ -129,164 +131,81 @@ function StreakCard({ data, index }: { data: StreakData; index: number }) {
   );
 }
 
-// API Fetchers
-async function fetchDuolingo(): Promise<{ streak: number; xp: number; language: string }> {
-  try {
-    const res = await fetch(
-      'https://www.duolingo.com/2017-06-30/users?username=Towhid_0&fields=streak,streakData%7BcurrentStreak,previousStreak%7D,totalXp,currentCourseId'
-    );
-    if (!res.ok) throw new Error('Failed');
-    const data = await res.json();
-    const user = data.users?.[0];
-    if (!user) throw new Error('No user');
-    
-    const streak = Math.max(
-      user.streak ?? 0,
-      user.streakData?.currentStreak?.length ?? 0,
-      user.streakData?.previousStreak?.length ?? 0
-    );
-    
-    return { streak, xp: user.totalXp || 0, language: 'Japanese' };
-  } catch {
-    throw new Error('Duolingo fetch failed');
-  }
-}
-
-async function fetchGitHub(): Promise<{ activeDays: number; events: number }> {
-  try {
-    const res = await fetch('https://api.github.com/users/towhid-01/events/public?per_page=100');
-    if (!res.ok) throw new Error('Failed');
-    const events = await res.json();
-    const uniqueDates = new Set(events.map((e: any) => e.created_at?.split('T')[0]).filter(Boolean));
-    return { activeDays: uniqueDates.size, events: events.length };
-  } catch {
-    throw new Error('GitHub fetch failed');
-  }
-}
-
-async function fetchLeetCode(): Promise<{ solved: number; streak: number }> {
-  try {
-    const query = `query getUserProfile($username: String!) {
-      matchedUser(username: $username) {
-        submitStats: submitStatsGlobal { acSubmissionNum { difficulty count } }
-        userCalendar { streak }
-      }
-    }`;
-    
-    const res = await fetch('https://leetcode.com/graphql', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query, variables: { username: '_PrEdAToR_' } }),
-    });
-    
-    if (!res.ok) throw new Error('Failed');
-    const result = await res.json();
-    const user = result.data?.matchedUser;
-    if (!user) throw new Error('No user');
-    
-    const submissions = user.submitStats?.acSubmissionNum || [];
-    const total = submissions.find((s: any) => s.difficulty === 'All')?.count || 0;
-    
-    return { solved: total, streak: user.userCalendar?.streak || 0 };
-  } catch {
-    throw new Error('LeetCode fetch failed');
-  }
-}
-
-async function fetchCodeWars(): Promise<{ honor: number; rank: string; kata: number }> {
-  try {
-    const res = await fetch('https://www.codewars.com/api/v1/users/towhid-01');
-    if (!res.ok) throw new Error('Failed');
-    const data = await res.json();
-    return {
-      honor: data.honor || 0,
-      rank: data.ranks?.overall?.name || 'New',
-      kata: data.codeChallenges?.totalCompleted || 0,
-    };
-  } catch {
-    throw new Error('CodeWars fetch failed');
-  }
-}
-
-async function fetchWakaTime(): Promise<{ hours: number; daily: string; language: string }> {
-  try {
-    const res = await fetch(
-      'https://wakatime.com/api/v1/users/55dcc4cb-eb6f-4b98-8827-476c1997d057/stats/last_7_days'
-    );
-    if (!res.ok) throw new Error('Failed');
-    const data = await res.json();
-    const stats = data.data || data;
-    
-    const totalHours = Math.round((stats.total_seconds || 0) / 3600);
-    const dailyAvgSec = stats.daily_average || 0;
-    const dailyH = Math.floor(dailyAvgSec / 3600);
-    const dailyM = Math.floor((dailyAvgSec % 3600) / 60);
-    const topLang = stats.languages?.[0]?.name || 'Code';
-    
-    return { hours: totalHours, daily: `${dailyH}h ${dailyM}m`, language: topLang };
-  } catch {
-    throw new Error('WakaTime fetch failed');
-  }
-}
-
 export default function StreakZone() {
-  const [streaks, setStreaks] = useState<StreakData[]>([
-    { platform: 'Duolingo', icon: '🦉', streak: 0, label: 'Day Streak', subtitle: 'Loading...', profileUrl: 'https://www.duolingo.com/profile/Towhid_0', isLoading: true },
-    { platform: 'GitHub', icon: '🐙', streak: 0, label: 'Active Days', subtitle: 'Loading...', profileUrl: 'https://github.com/towhid-01', isLoading: true },
-    { platform: 'LeetCode', icon: '🧩', streak: 0, label: 'Problems Solved', subtitle: 'Loading...', profileUrl: 'https://leetcode.com/u/_PrEdAToR_/', isLoading: true },
-    { platform: 'CodeWars', icon: '⚔️', streak: 0, label: 'Honor Points', subtitle: 'Loading...', profileUrl: 'https://www.codewars.com/users/towhid-01', isLoading: true },
-    { platform: 'WakaTime', icon: '⏱️', streak: 0, label: 'Hours/Week', subtitle: 'Loading...', profileUrl: 'https://wakatime.com/@55dcc4cb-eb6f-4b98-8827-476c1997d057', isLoading: true },
+  const [stats, setStats] = useState<StatCardData[]>([
+    {
+      id: 'github',
+      icon: '🐙',
+      platform: 'GitHub',
+      value: 0,
+      suffix: '',
+      label: 'Recent Commits',
+      subtitle: 'Loading...',
+      profileUrl: 'https://github.com/towhid-01',
+      isLoading: true,
+    },
+    {
+      id: 'problems',
+      icon: '🧩',
+      platform: 'Problems Solved',
+      value: 1200,
+      suffix: '+',
+      label: 'Algorithmic Problems',
+      subtitle: 'Competitive Programming',
+      profileUrl: 'https://leetcode.com/u/_PrEdAToR_/',
+    },
+    {
+      id: 'games',
+      icon: '🎮',
+      platform: 'Games Shipped',
+      value: 6,
+      suffix: '+',
+      label: 'Complete Games',
+      subtitle: 'Mobile & PC Platforms',
+      profileUrl: 'https://github.com/towhid-01',
+    },
   ]);
 
   useEffect(() => {
-    const fetchAll = async () => {
-      // Duolingo - Calculate streak based on formula
-      const duolingoStreak = 1155 + Math.floor((Date.now() - new Date('2025-01-16').getTime()) / 86400000);
-      setStreaks(prev => prev.map(s =>
-        s.platform === 'Duolingo'
-          ? { ...s, streak: duolingoStreak, subtitle: `Learning Japanese`, isLoading: false }
-          : s
-      ));
-
-      // GitHub - Hardcoded
-      setStreaks(prev => prev.map(s =>
-        s.platform === 'GitHub'
-          ? { ...s, streak: 30, subtitle: `Active Days`, isLoading: false }
-          : s
-      ));
-
-      // LeetCode - Hardcoded
-      setStreaks(prev => prev.map(s =>
-        s.platform === 'LeetCode'
-          ? { ...s, streak: 150, subtitle: `Problems Solved`, isLoading: false }
-          : s
-      ));
-
-      // CodeWars - Keep API
+    const fetchGitHub = async () => {
       try {
-        const cw = await fetchCodeWars();
-        setStreaks(prev => prev.map(s =>
-          s.platform === 'CodeWars'
-            ? { ...s, streak: cw.honor, subtitle: `${cw.rank} • ${cw.kata} kata`, isLoading: false }
-            : s
-        ));
+        const res = await fetch('https://api.github.com/users/towhid-01/events/public?per_page=100');
+        if (!res.ok) throw new Error('Failed');
+        const events = await res.json();
+        const pushEvents = events.filter((e: { type: string }) => e.type === 'PushEvent');
+        const commits = pushEvents.reduce(
+          (sum: number, e: { payload?: { commits?: unknown[] } }) =>
+            sum + (e.payload?.commits?.length ?? 1),
+          0
+        );
+        const uniqueDates = new Set(
+          events.map((e: { created_at?: string }) => e.created_at?.split('T')[0]).filter(Boolean)
+        );
+        setStats(prev =>
+          prev.map(s =>
+            s.id === 'github'
+              ? {
+                  ...s,
+                  value: commits,
+                  label: 'Recent Commits',
+                  subtitle: `${uniqueDates.size} active days`,
+                  isLoading: false,
+                }
+              : s
+          )
+        );
       } catch {
-        setStreaks(prev => prev.map(s =>
-          s.platform === 'CodeWars'
-            ? { ...s, streak: 376, subtitle: '5 kyu • Kata completed', isLoading: false, error: true }
-            : s
-        ));
+        setStats(prev =>
+          prev.map(s =>
+            s.id === 'github'
+              ? { ...s, value: 47, label: 'Recent Commits', subtitle: 'Active on GitHub', isLoading: false }
+              : s
+          )
+        );
       }
-
-      // WakaTime - Hardcoded
-      setStreaks(prev => prev.map(s =>
-        s.platform === 'WakaTime'
-          ? { ...s, streak: 25, subtitle: `Hours this week`, isLoading: false }
-          : s
-      ));
     };
 
-    fetchAll();
+    fetchGitHub();
   }, []);
 
   return (
@@ -300,16 +219,16 @@ export default function StreakZone() {
           className="text-center mb-12"
         >
           <h2 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent pb-2">
-            Streak Zone <span className="text-3xl">🔥</span>
+            Developer Stats <span className="text-3xl">📊</span>
           </h2>
           <p className="text-foreground/60 text-lg max-w-2xl mx-auto">
-            Consistency is key. Here's my daily practice across different platforms.
+            My development activity and achievements
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          {streaks.map((streak, index) => (
-            <StreakCard key={streak.platform} data={streak} index={index} />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          {stats.map((stat, index) => (
+            <StatCard key={stat.id} data={stat} index={index} />
           ))}
         </div>
 
