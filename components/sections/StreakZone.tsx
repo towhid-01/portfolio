@@ -256,18 +256,6 @@ export default function StreakZone() {
           ))}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.5 }}
-          className="mt-12 text-center"
-        >
-          <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-purple-500/10 border border-purple-500/30">
-            <span className="text-foreground/60 text-sm">Building habits, one day at a time</span>
-            <span className="text-lg">💪</span>
-          </div>
-        </motion.div>
       </div>
     </section>
   );

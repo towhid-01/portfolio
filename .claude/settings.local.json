@@ -26,7 +26,9 @@
       "Bash(gh api:*)",
       "WebFetch(domain:api.github.com)",
       "WebFetch(domain:towhidsarker.com)",
-      "Bash(npx next:*)"
+      "Bash(npx next:*)",
+      "Bash(Get-ChildItem -Path \"H:\\\\Websites\\\\StrawHat Pirates\\\\portfolio\\\\lib\" -Recurse)",
+      "Bash(Select-Object FullName)"
     ],
     "deny": [],
     "ask": []

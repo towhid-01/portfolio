@@ -1,4 +1,4 @@
-﻿import { Briefcase, Gamepad2 } from "lucide-react"
+﻿import { Gamepad2 } from "lucide-react"
 import type { Experience } from "@/types"
 
 export const experiences: Experience[] = [
@@ -14,7 +14,7 @@ export const experiences: Experience[] = [
       "Collaborating with designers to deliver production-ready games",
     ],
     icon: Gamepad2,
-    gradient: "from-orange-500 to-purple-500",
+    gradient: "from-purple-500 to-violet-600",
   },
   {
     company: "VisionTillion",
@@ -29,7 +29,7 @@ export const experiences: Experience[] = [
       "Optimizing game performance through debugging and close collaboration with artists and designers to ensure quality delivery",
     ],
     icon: Gamepad2,
-    gradient: "from-purple-500 to-cyan-500",
+    gradient: "from-purple-500 to-violet-600",
   },
   {
     company: "Qiulin Technologies",
@@ -43,8 +43,8 @@ export const experiences: Experience[] = [
       "Created performance reports and salary sheets in Excel based on task completion data",
       "Improved team productivity through strategic task coordination and evaluation metrics",
     ],
-    icon: Briefcase,
-    gradient: "from-primary to-secondary",
+    icon: Gamepad2,
+    gradient: "from-purple-500 to-violet-600",
   },
   {
     company: "Riseup Labs",
@@ -59,6 +59,6 @@ export const experiences: Experience[] = [
       "Contributed to debugging and iteration based on user feedback",
     ],
     icon: Gamepad2,
-    gradient: "from-secondary to-primary",
+    gradient: "from-purple-500 to-violet-600",
   },
 ]
