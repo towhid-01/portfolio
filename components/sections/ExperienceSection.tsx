@@ -36,7 +36,7 @@ export default function ExperienceSection() {
             >
               <div className="flex items-center mb-6">
                 <div
-                  className={`w-8 h-8 bg-gradient-to-br ${exp.gradient} rounded-full mr-4 z-10 flex items-center justify-center text-background shadow-lg`}
+                  className={`w-10 h-10 bg-gradient-to-br ${exp.gradient} rounded-full mr-4 z-10 flex items-center justify-center text-white shadow-lg flex-shrink-0`}
                 >
                   <exp.icon className="w-5 h-5" />
                 </div>

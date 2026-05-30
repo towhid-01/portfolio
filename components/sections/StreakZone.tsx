@@ -168,6 +168,33 @@ export default function StreakZone() {
 
   useEffect(() => {
     const fetchGitHub = async () => {
+      // Try contributions API for yearly count first
+      try {
+        const res = await fetch('https://github-contributions-api.jogruber.de/v4/towhid-01?y=last');
+        if (!res.ok) throw new Error('contributions API failed');
+        const data = await res.json();
+        const total: number = data.contributions?.reduce(
+          (sum: number, day: { count: number }) => sum + day.count, 0
+        ) ?? 0;
+        setStats(prev =>
+          prev.map(s =>
+            s.id === 'github'
+              ? {
+                  ...s,
+                  value: total,
+                  label: 'contributions in the last year',
+                  subtitle: 'GitHub Activity',
+                  isLoading: false,
+                }
+              : s
+          )
+        );
+        return;
+      } catch {
+        // fall through to events API
+      }
+
+      // Fallback: GitHub events API
       try {
         const res = await fetch('https://api.github.com/users/towhid-01/events/public?per_page=100');
         if (!res.ok) throw new Error('Failed');
@@ -178,17 +205,14 @@ export default function StreakZone() {
             sum + (e.payload?.commits?.length ?? 1),
           0
         );
-        const uniqueDates = new Set(
-          events.map((e: { created_at?: string }) => e.created_at?.split('T')[0]).filter(Boolean)
-        );
         setStats(prev =>
           prev.map(s =>
             s.id === 'github'
               ? {
                   ...s,
                   value: commits,
-                  label: 'Recent Commits',
-                  subtitle: `${uniqueDates.size} active days`,
+                  label: 'contributions in the last year',
+                  subtitle: 'GitHub Activity',
                   isLoading: false,
                 }
               : s
@@ -198,7 +222,7 @@ export default function StreakZone() {
         setStats(prev =>
           prev.map(s =>
             s.id === 'github'
-              ? { ...s, value: 47, label: 'Recent Commits', subtitle: 'Active on GitHub', isLoading: false }
+              ? { ...s, value: 441, label: 'contributions in the last year', subtitle: 'GitHub Activity', isLoading: false }
               : s
           )
         );

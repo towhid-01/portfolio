@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { motion, useInView } from "framer-motion"
+import { motion, useInView, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -26,6 +26,7 @@ export default function ContactSection() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showAchievement, setShowAchievement] = useState(false)
 
   const {
     register,
@@ -51,6 +52,8 @@ export default function ContactSection() {
     toast.info("Email integration coming soon!", {
       description: "Please contact me directly at towhid.sarker3@gmail.com for now.",
     })
+    setShowAchievement(true)
+    setTimeout(() => setShowAchievement(false), 3000)
     setIsSubmitting(false)
     reset()
     return
@@ -239,6 +242,41 @@ export default function ContactSection() {
           </motion.div>
         </div>
       </div>
+
+      {/* Achievement popup on form submit */}
+      <AnimatePresence>
+        {showAchievement && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] flex items-end justify-center pb-12 pointer-events-none"
+          >
+            <motion.div
+              initial={{ scale: 0.6, y: 60, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.8, y: 30, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 260, damping: 22 }}
+              className="bg-gradient-to-br from-yellow-600/95 via-orange-600/95 to-amber-600/95 backdrop-blur-xl border-2 border-yellow-300/70 rounded-2xl px-8 py-6 shadow-2xl text-center max-w-xs mx-4 relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/10 via-white/5 to-yellow-400/10 animate-pulse pointer-events-none rounded-2xl" />
+              <motion.div
+                animate={{ rotate: [0, -15, 15, -10, 10, 0], scale: [1, 1.2, 1] }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="text-5xl mb-3 relative z-10"
+              >
+                🏆
+              </motion.div>
+              <div className="relative z-10">
+                <div className="text-yellow-200 font-bold text-xs tracking-widest uppercase mb-1">
+                  Achievement Unlocked
+                </div>
+                <div className="text-white font-bold text-xl">Made Contact!</div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   )
 }

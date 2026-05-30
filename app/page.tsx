@@ -23,6 +23,7 @@ import { ThemeProvider, useTheme } from "@/contexts/ThemeContext"
 import { GameProvider } from "@/contexts/GameContext"
 import { stats } from "@/lib/constants"
 import { Navbar } from "@/components/layout"
+import { KonamiCode } from "@/components/konami-code"
 
 // Dynamic imports for performance - code split all heavy sections
 const LoadingScreen = dynamic(() => import("@/components/loading-screen").then(m => ({ default: m.LoadingScreen })), { ssr: false })
@@ -151,9 +152,16 @@ const DuolingoBadge = () => {
   const daysSince = Math.floor((Date.now() - baseDate) / 86400000)
   const streak = base + Math.max(0, daysSince)
   return (
-    <Badge className="bg-green-500/20 text-green-400 border-green-500/40 px-3 py-1 hover:bg-green-500/30 transition-colors">
-      🦉 {streak}+ day Duolingo streak
-    </Badge>
+    <a
+      href="https://www.duolingo.com/profile/Towhid_0"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-block"
+    >
+      <Badge className="bg-green-500/20 text-green-400 border-green-500/40 px-3 py-1 hover:bg-green-500/40 hover:border-green-400/60 hover:shadow-[0_0_12px_rgba(34,197,94,0.4)] transition-all duration-200 cursor-pointer">
+        🦉 {streak}+ day Duolingo streak
+      </Badge>
+    </a>
   )
 }
 
@@ -269,6 +277,7 @@ const MainContent = () => {
         <LoadingScreen isLoading={isLoading} />
         <ParticleBackground />
         <GameUI />
+        <KonamiCode />
         <Navbar />
         <HeroSection />
         <AboutSection />
